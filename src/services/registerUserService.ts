@@ -3,11 +3,11 @@ import { user } from "../types/user";
 import bcrypt from "bcrypt";
 import config from "../config";
 
-export async function registerUserService(reqBody: user) {
+export async function registerUserService(body: user) {
   return await prisma.user.create({
     data: {
-      username: reqBody.username,
-      password: await bcrypt.hash(reqBody.password, config.salt),
+      username: body.username,
+      password: await bcrypt.hash(body.password, config.salt),
       account: {
         create: { balance: 100 },
       },
