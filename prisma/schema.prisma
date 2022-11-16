@@ -18,12 +18,16 @@ model User {
   accountId            String        @unique
   debitedTransactions  Transaction[] @relation("Debited")
   creditedTransactions Transaction[] @relation("Credited")
+
+  @@map("users")
 }
 
 model Account {
   id      String @id @default(uuid())
   user    User?
   balance Float
+
+  @@map("accounts")
 }
 
 model Transaction {
@@ -34,4 +38,6 @@ model Transaction {
   creditedId      String
   value           Float
   createdAt       DateTime @default(now())
+
+  @@map("transactions")
 }
