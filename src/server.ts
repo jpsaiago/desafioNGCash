@@ -5,6 +5,7 @@ import config from "./config";
 import express from "express";
 import http from "http";
 import cors from "cors";
+import { errorHandler } from "./middleware/errorHandler";
 
 const server = express();
 prisma
@@ -18,6 +19,7 @@ function startServer() {
   server.use(express.json());
   server.use(cors());
   server.use(router);
+  server.use(errorHandler);
 
   http
     .createServer(server)
