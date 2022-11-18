@@ -1,15 +1,7 @@
 import { ZodEffects, AnyZodObject, ZodError } from "zod";
 import { Request, Response, NextFunction } from "express";
 import { logger } from "../utils/logger";
-
-class ResponseObject {
-  public path: string;
-  public message: string;
-  constructor(path: string, message: string) {
-    this.path = path;
-    this.message = message;
-  }
-}
+import { BadRequestError } from "../utils/api-errors";
 
 export function requestValidator(
   schema: AnyZodObject | ZodEffects<AnyZodObject>
@@ -21,16 +13,12 @@ export function requestValidator(
     } catch (err) {
       //Mandatory type check to avoid Typescript errors
       if (err instanceof ZodError) {
-        const responseArray: ResponseObject[] = [];
+        const errorMessage = "";
         logger.error("Request body", "Invalid info.");
         err.issues.map((issue) => {
-          const responseObject = new ResponseObject(
-            issue.path.toString(),
-            issue.message
-          );
-          responseArray.push(responseObject);
+          errorMessage + ", " + `${issue.path.toString()} is a required field`;
         });
-        return res.status(400).send(responseArray);
+        return next(new BadRequestError(errorMessage));
       }
     }
   };

@@ -1,10 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "../services/userServices";
-import { Credentials, LoggedUser } from "../types/user";
+import { Credentials } from "../types/user";
 import {
+  ApiError,
   BadRequestError,
+  GatewayError,
   ServerError,
+  TimeoutError,
   UnauthorizedError,
 } from "../utils/api-errors";
 
@@ -17,22 +20,42 @@ export class UserController {
       const username = await service.register(body);
       res.status(201).send(`User ${username} registered successfully!`);
     } catch (error) {
-      //Mandatory typecheck to avoid typescript errors
       if (error instanceof (Prisma.PrismaClientKnownRequestError || Error)) {
         const code = error.code;
-        if (code == "P2002") {
-          return next(new BadRequestError(`This user is already registered`));
+        switch (code) {
+          case "P2002":
+            return next(new BadRequestError("This user is already registered"));
+          case "P1001":
+            return next(new GatewayError("Can't reach the database"));
+          case "P1008":
+            return next(new TimeoutError("Operation timed out"));
+          default:
+            return next(new ServerError(error.message));
         }
-        return next(new ServerError(error.message));
       }
     }
   }
 
-  public async login(req: Request, res: Response) {
+  public async login(req: Request, res: Response, next: NextFunction) {
     const body = req.body as Credentials;
-    const info = await service.login(body);
-    if (info) {
+    try {
+      const info = await service.login(body);
       res.status(200).json(info);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        next(error);
+      }
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        const code = error.code;
+        switch (code) {
+          case "P1001":
+            return next(new GatewayError("Can't reach the database"));
+          case "P1008":
+            return next(new TimeoutError("Operation timed out"));
+          default:
+            return next(new ServerError(error.message));
+        }
+      }
     }
   }
 
@@ -41,7 +64,26 @@ export class UserController {
     if (!auth || !auth.startsWith("Bearer ")) {
       next(new UnauthorizedError("Invalid or missing token."));
     }
-    const token = req.headers.authorization?.split("")[1];
-    const targetId = req.params.userId;
+    const token = `${req.headers.authorization?.substring(7)}`;
+    const targetId = req.params.username;
+    try {
+      const balance = await service.getBalance(targetId, token);
+      res.status(200).send(balance);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        next(error);
+      }
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        const code = error.code;
+        switch (code) {
+          case "P1001":
+            return next(new GatewayError("Can't reach the database"));
+          case "P1008":
+            return next(new TimeoutError("Operation timed out"));
+          default:
+            return next(new ServerError(error.message));
+        }
+      }
+    }
   }
 }

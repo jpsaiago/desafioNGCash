@@ -1,0 +1,10 @@
+services:
+  testdb:
+    image: postgres:alpine
+    restart: always
+    ports:
+      - "2604:5432"
+environment:
+  POSTGRES_USER: testuser
+  POSTGRES_PASSWORD: admin
+  POSTGRES_DB: tests

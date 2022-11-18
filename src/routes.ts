@@ -16,4 +16,4 @@ router.post("/users", requestValidator(validation.registration), user.register);
 
 router.post("/login", requestValidator(validation.login), user.login);
 
-router.get("users/:userId", user.getBalance);
+router.get("/users/:username", user.getBalance);
