@@ -12,11 +12,7 @@ router.use(logger.request);
 //Healthcheck route
 router.get("/ping", (req, res) => res.status(200).send("Pong"));
 
-router.post(
-  "/register",
-  requestValidator(validation.registration),
-  user.register
-);
+router.post("/users", requestValidator(validation.registration), user.register);
 
 router.post("/login", requestValidator(validation.login), user.login);
 

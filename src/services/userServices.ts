@@ -1,25 +1,22 @@
-import { prisma } from "../database/prismaClient";
+import { prisma } from "../prisma/prismaClient";
 import { Credentials } from "../types/user";
 import config from "../config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Prisma } from "@prisma/client";
 
 export class UserService {
   public async register(body: Credentials) {
-    try {
-      const user = await prisma.user.create({
-        data: {
-          username: body.username,
-          password: await bcrypt.hash(body.password, config.salt),
-          account: {
-            create: { balance: 100 },
-          },
+    const user = await prisma.user.create({
+      data: {
+        username: body.username,
+        password: await bcrypt.hash(body.password, config.salt),
+        account: {
+          create: { balance: 100 },
         },
-      });
-      return user;
-    } catch (error) {
-      console.log(error);
-    }
+      },
+    });
+    return user.username;
   }
 
   public async login(body: Credentials) {
