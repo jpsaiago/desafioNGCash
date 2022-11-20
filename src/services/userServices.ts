@@ -1,7 +1,8 @@
 import { prisma } from "../prisma/prismaClient";
+import { ForbiddenError, UnauthorizedError } from "../helpers/api-errors";
 import config from "../config";
 import bcrypt from "bcrypt";
-import { ForbiddenError, UnauthorizedError } from "../helpers/api-errors";
+import jwt from "jsonwebtoken";
 
 export class UserService {
   public async register(input: Credentials) {
@@ -24,45 +25,39 @@ export class UserService {
         username: input.username,
       },
     });
-    //The same
+    //Throws if user is not found
     if (!user || !(await bcrypt.compare(input.password, user.password))) {
       throw new UnauthorizedError("Wrong username or password.");
     }
-    // const token = await new jose.SignJWT({ userId: user.id })
-    //   .setIssuedAt()
-    //   .setExpirationTime("24h")
-    //   .sign(config.secret);
-    // return {
-    //   token: await new jose.SignJWT({ userId: user.id })
-    //     .setExpirationTime("24h")
-    //     .sign(config.secret)({ userId: user.id }, config.secret, {
-    //     expiresIn: config.jwtDuration,
-    //   }),
-    //   username: user.username,
-    //   userId: user.id,
-    //   accountId: user.accountId,
-    // };
+    const token = jwt.sign({ userId: user.id }, config.secret, {
+      expiresIn: "24h",
+    });
+    return {
+      token: token,
+      username: user.username,
+      userId: user.id,
+      accountId: user.accountId,
+    };
   }
 
-  public async getBalance(target: string, payload: string) {
+  public async getInfo(targetUser: string, payload: string) {
     const authUser = await prisma.user.findUniqueOrThrow({
-      where: { username: target },
+      where: { username: targetUser },
       select: {
         id: true,
-        accountId: true,
+        account: {
+          select: {
+            balance: true,
+            creditedTransactions: true,
+            debitedTransactions: true,
+          },
+        },
       },
     });
-    if (!(payload === authUser.id)) {
+    const { id, ...userInfo } = authUser;
+    if (id !== payload) {
       throw new ForbiddenError("Invalid access attempt.");
     }
-    const account = await prisma.account.findUniqueOrThrow({
-      where: {
-        id: authUser.accountId,
-      },
-      select: {
-        balance: true,
-      },
-    });
-    return account;
+    return userInfo;
   }
 }

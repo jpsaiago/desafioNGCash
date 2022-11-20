@@ -1,3 +1,4 @@
+export {};
 declare global {
   export interface Credentials {
     username: string;
@@ -15,5 +16,3 @@ declare global {
     userId: string;
   }
 }
-
-export {};

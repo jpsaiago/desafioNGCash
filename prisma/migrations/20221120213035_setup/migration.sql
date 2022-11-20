@@ -37,7 +37,7 @@ CREATE UNIQUE INDEX "users_accountId_key" ON "users"("accountId");
 ALTER TABLE "users" ADD CONSTRAINT "users_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "transactions" ADD CONSTRAINT "transactions_debitedId_fkey" FOREIGN KEY ("debitedId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_debitedId_fkey" FOREIGN KEY ("debitedId") REFERENCES "accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "transactions" ADD CONSTRAINT "transactions_creditedId_fkey" FOREIGN KEY ("creditedId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_creditedId_fkey" FOREIGN KEY ("creditedId") REFERENCES "accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

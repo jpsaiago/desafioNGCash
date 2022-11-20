@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { NextFunction, Response, Request } from "express";
+import { Request, Response, NextFunction } from "express";
 import { UserService } from "../services/userServices";
 import {
   BadRequestError,
@@ -28,7 +28,7 @@ export class UserController {
   }
 
   public async register(req: Request, res: Response, next: NextFunction) {
-    const body = req.body as Credentials;
+    const body = req.body;
     try {
       const username = await service.register(body);
       res.status(201).send(`User ${username} registered successfully!`);
@@ -38,7 +38,7 @@ export class UserController {
   }
 
   public async login(req: Request, res: Response, next: NextFunction) {
-    const body = req.body as Credentials;
+    const body = req.body;
     try {
       const info = await service.login(body);
       res.status(200).json(info);
@@ -47,14 +47,14 @@ export class UserController {
     }
   }
 
-  public async getBalance(req: Request, res: Response, next: NextFunction) {
-    const targetId = req.params.username;
+  public async getInfo(req: Request, res: Response, next: NextFunction) {
+    const targetUser = req.params.username;
     try {
-      const balance = await service.getBalance(
-        targetId,
+      const account = await service.getInfo(
+        targetUser,
         `${req.context?.userId}`
       );
-      res.status(200).send(balance);
+      res.status(200).json(account);
     } catch (error) {
       next(this.handleErrors(error));
     }

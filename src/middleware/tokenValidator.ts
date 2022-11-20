@@ -1,5 +1,5 @@
 import { UnauthorizedError } from "../helpers/api-errors";
-import jose from "jose";
+import jwt from "jsonwebtoken";
 import config from "../config";
 import { NextFunction, Request, Response } from "express";
 
@@ -15,12 +15,16 @@ export async function tokenValidator(
   }
   //Get the actual string from the header
   const token = `${auth?.substring(7)}`;
-  //Type manipulation needed to tell Typescript I know what kind of return I expect from this call
-
-  //Check for the id property to avoid invalid token payloads
-  // if (payload.userId) {
-  //   next(new UnauthorizedError("Token missing or invalid."));
-  // }
-  // req.context = { userId: payload.userId };
-  // next();
+  try {
+    //Type manipulation needed to tell Typescript I know what kind of return I expect from this call
+    const payload = jwt.verify(token, config.secret) as unknown as TokenPayload;
+    //Check for the id property to avoid invalid token payloads
+    if (!payload.userId) {
+      next(new UnauthorizedError("Token missing or invalid."));
+    }
+    req.context = { userId: payload.userId };
+    next();
+  } catch (error) {
+    next(new UnauthorizedError("Token missing or invalid."));
+  }
 }
