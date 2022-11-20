@@ -10,7 +10,7 @@ function error(code: string, message: string) {
 
 const request = (req: Request, res: Response, next: NextFunction) => {
   console.log(
-    `[${new Date().toLocaleString()}] [${req.method}] - ${req.originalUrl} - ${
+    `[${new Date().toISOString()}] [${req.method}] ${req.originalUrl} from ${
       req.ip
     }`
   );

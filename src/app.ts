@@ -10,4 +10,6 @@ app.use(cors());
 app.use(router);
 app.use(errorHandler);
 
+//Healthcheck route
+app.get("/ping", (req, res) => res.status(200).send("Pong"));
 export default app;

@@ -5,7 +5,7 @@ import {
   GatewayError,
   TimeoutError,
   UnauthorizedError,
-} from "../../src/utils/api-errors";
+} from "../../src/helpers/api-errors";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import { Prisma } from "@prisma/client";
 

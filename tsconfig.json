@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "sourceMap": true,
     "target": "ESNext",
-    "module": "CommonJS",
     "rootDir": "./",
     "outDir": "./build",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "lib": ["esnext"]
-  }
+  },
+  "files": [
+    "./src/types/user.d.ts",
+    "./src/types/express.d.ts"
+]
 }

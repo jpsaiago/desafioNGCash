@@ -2,6 +2,7 @@ import { logger } from "./utils/logger";
 import { prisma } from "./prisma/prismaClient";
 import config from "./config";
 import app from "./app";
+import jose from "jose";
 
 prisma.$connect().then(start).catch(errorHandler);
 

@@ -2,7 +2,12 @@ import z from "zod";
 
 const registrationSchema = z
   .object({
-    username: z.string(),
+    username: z
+      .string()
+      .min(
+        3,
+        "This username is too short, it should be at least 3 characters long"
+      ),
     password: z
       .string()
       .min(

@@ -1,18 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../utils/api-errors";
+import { ApiError, ServerError } from "../helpers/api-errors";
+import { logger } from "../utils/logger";
 
 export async function errorHandler(
-  error: Error & ApiError,
+  error: unknown,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   if (error instanceof ApiError) {
-    const statusCode = error.statusCode;
-    const message = error.message;
-    return res.status(statusCode).json({ message });
+    logger.error(error.statusCode.toString(), error.message);
+    return res.status(error.statusCode).json({ issues: error.message });
   }
-  const statusCode = 500;
-  const message = "Internal Server Error";
-  return res.status(statusCode).json({ message });
+  const response = new ServerError();
+  return res.status(response.statusCode).json({ message: response.message });
 }

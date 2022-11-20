@@ -1,10 +1,7 @@
 import { prisma } from "../prisma/prismaClient";
-import { Credentials } from "../types/user";
 import config from "../config";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { ForbiddenError, UnauthorizedError } from "../utils/api-errors";
-import { validateToken } from "../middleware/validateToken";
+import { ForbiddenError, UnauthorizedError } from "../helpers/api-errors";
 
 export class UserService {
   public async register(input: Credentials) {
@@ -21,27 +18,33 @@ export class UserService {
   }
 
   public async login(input: Credentials) {
+    //Searches the database for the received user
     const user = await prisma.user.findUnique({
       where: {
         username: input.username,
       },
     });
+    //The same
     if (!user || !(await bcrypt.compare(input.password, user.password))) {
       throw new UnauthorizedError("Wrong username or password.");
     }
-    return {
-      token: jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: config.jwtDuration,
-      }),
-      username: user.username,
-      userId: user.id,
-      accountId: user.accountId,
-    };
+    // const token = await new jose.SignJWT({ userId: user.id })
+    //   .setIssuedAt()
+    //   .setExpirationTime("24h")
+    //   .sign(config.secret);
+    // return {
+    //   token: await new jose.SignJWT({ userId: user.id })
+    //     .setExpirationTime("24h")
+    //     .sign(config.secret)({ userId: user.id }, config.secret, {
+    //     expiresIn: config.jwtDuration,
+    //   }),
+    //   username: user.username,
+    //   userId: user.id,
+    //   accountId: user.accountId,
+    // };
   }
 
-  public async getBalance(target: string, token: string) {
-    //The validateToken middleware does the repetitive validation heavy lifting
-    const payload = await validateToken(token);
+  public async getBalance(target: string, payload: string) {
     const authUser = await prisma.user.findUniqueOrThrow({
       where: { username: target },
       select: {
@@ -49,7 +52,7 @@ export class UserService {
         accountId: true,
       },
     });
-    if (!(payload.id === authUser.id)) {
+    if (!(payload === authUser.id)) {
       throw new ForbiddenError("Invalid access attempt.");
     }
     const account = await prisma.account.findUniqueOrThrow({
