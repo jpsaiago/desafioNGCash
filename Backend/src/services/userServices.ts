@@ -1,7 +1,7 @@
 import { prisma } from "../prisma/prismaClient";
-import { ForbiddenError, UnauthorizedError } from "../helpers/api-errors";
+import { UnauthorizedError } from "../helpers/api-errors";
 import config from "../config";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export class UserService {
@@ -40,11 +40,10 @@ export class UserService {
     };
   }
 
-  public async getInfo(targetUser: string, payload: string) {
-    const authUser = await prisma.user.findUniqueOrThrow({
+  public async getInfo(targetUser: string) {
+    const userInfo = await prisma.user.findUniqueOrThrow({
       where: { username: targetUser },
       select: {
-        id: true,
         account: {
           select: {
             balance: true,
@@ -54,10 +53,7 @@ export class UserService {
         },
       },
     });
-    const { id, ...userInfo } = authUser;
-    if (id !== payload) {
-      throw new ForbiddenError("Invalid access attempt.");
-    }
+
     return userInfo;
   }
 }

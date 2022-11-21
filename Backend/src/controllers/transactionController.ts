@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import { UserService } from "../services/userServices";
 import {
   BadRequestError,
   GatewayError,
@@ -32,10 +31,9 @@ export class TransactionController {
     const body = req.body as Transaction;
     try {
       const results = await service.create(
-        body.sender,
+        `${req.context?.userId}`,
         body.receiver,
-        body.value,
-        `${req.context?.userId}`
+        body.value
       );
       res.status(200).json(results[2]);
     } catch (error) {

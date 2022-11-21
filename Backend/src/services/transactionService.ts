@@ -1,13 +1,11 @@
 import { prisma } from "../prisma/prismaClient";
-import { ForbiddenError } from "../helpers/api-errors";
+import { BadRequestError, ForbiddenError } from "../helpers/api-errors";
 
 export class TransactionService {
-  public async create(
-    sender: string,
-    receiver: string,
-    value: number,
-    payload: string
-  ) {
+  public async create(sender: string, recipient: string, value: number) {
+    if (sender == recipient) {
+      throw new BadRequestError("Invalid transaction recipient");
+    }
     const dbSender = await prisma.user.findUniqueOrThrow({
       where: { username: sender },
       select: {
@@ -15,15 +13,12 @@ export class TransactionService {
         account: true,
       },
     });
-    //Check if the operation is allowed
-    if (dbSender.id !== payload) {
-      throw new ForbiddenError("Invalid access attempt.");
-    }
+    //Could create a data racing condition
     if (value > dbSender.account.balance) {
       throw new ForbiddenError("Insufficient account funds.");
     }
-    const dbReceiver = await prisma.user.findUniqueOrThrow({
-      where: { username: receiver },
+    const dbRecipient = await prisma.user.findUniqueOrThrow({
+      where: { username: recipient },
       select: {
         id: true,
         account: true,
@@ -36,7 +31,7 @@ export class TransactionService {
     });
 
     const add = prisma.account.update({
-      where: { id: dbReceiver.account.id },
+      where: { id: dbRecipient.account.id },
       data: { balance: { increment: value } },
     });
 
@@ -44,7 +39,7 @@ export class TransactionService {
       data: {
         value: value,
         debitedId: dbSender.account.id,
-        creditedId: dbReceiver.account.id,
+        creditedId: dbRecipient.account.id,
       },
     });
     //Execute the operations in order, roll back everything if any one of them fails

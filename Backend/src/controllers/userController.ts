@@ -15,11 +15,11 @@ export class UserController {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       switch (error.code) {
         case "P2002":
-          return new BadRequestError("This user is already registered");
+          return new BadRequestError("This user is already registered.");
         case "P1001":
-          return new GatewayError("Can't reach the database");
+          return new GatewayError("Can't reach the database.");
         case "P1008":
-          return new TimeoutError("Operation timed out");
+          return new TimeoutError("Operation timed out.");
         default:
           return new ServerError();
       }
@@ -48,12 +48,9 @@ export class UserController {
   }
 
   public async getInfo(req: Request, res: Response, next: NextFunction) {
-    const targetUser = req.params.username;
     try {
-      const account = await service.getInfo(
-        targetUser,
-        `${req.context?.userId}`
-      );
+      //Use the user id present in the token payload to grab info
+      const account = await service.getInfo(`${req.context?.userId}`);
       res.status(200).json(account);
     } catch (error) {
       next(this.handleErrors(error));

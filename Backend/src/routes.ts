@@ -25,7 +25,7 @@ router.post("/login", inputValidator(validation.login), (req, res, next) =>
 //Protects every route after this with a token validator
 router.use(tokenValidator);
 
-router.get("/users/:username", (req, res, next) =>
+router.get("/users", inputValidator(validation.transaction), (req, res, next) =>
   user.getInfo(req, res, next)
 );
 
