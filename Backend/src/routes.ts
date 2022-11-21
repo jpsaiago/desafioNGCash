@@ -4,7 +4,7 @@ import { UserController } from "./controllers/userController";
 import { inputValidator } from "./middleware/inputValidator";
 import { tokenValidator } from "./middleware/tokenValidator";
 import { logger } from "./utils/logger";
-import { validation } from "./validation/validation";
+import { validation } from "./schemas/validation";
 
 const user = new UserController();
 const transactions = new TransactionController();
@@ -25,10 +25,12 @@ router.post("/login", inputValidator(validation.login), (req, res, next) =>
 //Protects every route after this with a token validator
 router.use(tokenValidator);
 
-router.get("/users", inputValidator(validation.transaction), (req, res, next) =>
-  user.getInfo(req, res, next)
-);
+router.get("/users", (req, res, next) => user.getInfo(req, res, next));
 
-router.post("/transactions", (req, res, next) => {
-  transactions.create(req, res, next);
-});
+router.post(
+  "/transactions",
+  inputValidator(validation.transactionReq),
+  (req, res, next) => {
+    transactions.create(req, res, next);
+  }
+);

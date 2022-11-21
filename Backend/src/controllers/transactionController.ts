@@ -28,7 +28,7 @@ export class TransactionController {
   }
 
   public async create(req: Request, res: Response, next: NextFunction) {
-    const body = req.body as Transaction;
+    const body = req.body as TransactionRequest;
     try {
       const results = await service.create(
         `${req.context?.userId}`,

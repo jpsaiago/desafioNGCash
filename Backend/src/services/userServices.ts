@@ -29,31 +29,102 @@ export class UserService {
     if (!user || !(await bcrypt.compare(input.password, user.password))) {
       throw new UnauthorizedError("Wrong username or password.");
     }
-    const token = jwt.sign({ userId: user.id }, config.secret, {
-      expiresIn: "24h",
-    });
+    const token = jwt.sign(
+      { userId: user.id, username: user.username },
+      config.secret,
+      {
+        expiresIn: "24h",
+      }
+    );
     return {
       token: token,
-      username: user.username,
-      userId: user.id,
-      accountId: user.accountId,
     };
   }
 
   public async getInfo(targetUser: string) {
     const userInfo = await prisma.user.findUniqueOrThrow({
-      where: { username: targetUser },
+      where: { id: targetUser },
       select: {
         account: {
           select: {
             balance: true,
-            creditedTransactions: true,
-            debitedTransactions: true,
+            creditedTransactions: {
+              select: {
+                createdAt: true,
+                value: true,
+                debitedAccount: {
+                  select: {
+                    user: {
+                      select: {
+                        username: true,
+                      },
+                    },
+                  },
+                },
+                creditedAccount: {
+                  select: {
+                    user: {
+                      select: {
+                        username: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            debitedTransactions: {
+              select: {
+                createdAt: true,
+                value: true,
+                debitedAccount: {
+                  select: {
+                    user: {
+                      select: {
+                        username: true,
+                      },
+                    },
+                  },
+                },
+                creditedAccount: {
+                  select: {
+                    user: {
+                      select: {
+                        username: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
     });
 
-    return userInfo;
+    const transactions: Transaction[] = [];
+
+    userInfo.account.creditedTransactions.map((trsc) =>
+      transactions.push({
+        type: "credit",
+        value: trsc.value,
+        createdAt: trsc.createdAt,
+        from: trsc.debitedAccount.user?.username || "",
+        to: trsc.creditedAccount.user?.username || "",
+      })
+    );
+    userInfo.account.debitedTransactions.map((trsc) =>
+      transactions.push({
+        type: "debit",
+        value: trsc.value,
+        createdAt: trsc.createdAt,
+        from: trsc.debitedAccount.user?.username || "",
+        to: trsc.creditedAccount.user?.username || "",
+      })
+    );
+
+    return {
+      balance: userInfo.account.balance,
+      transactions: transactions,
+    };
   }
 }
