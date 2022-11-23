@@ -1,5 +1,5 @@
 import { prisma } from "../prisma/prismaClient";
-import { UnauthorizedError } from "../helpers/api-errors";
+import { ServerError, UnauthorizedError } from "../helpers/api-errors";
 import config from "../config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -37,11 +37,14 @@ export class UserService {
       }
     );
     return {
-      token: token,
+      username: user.username,
+      token,
+      exp: new Date().getTime() + 1000 * 60 * 60 * 24, //24 hours from now, the same as the token expiration date
     };
   }
 
   public async getInfo(targetUser: string) {
+    //Select the info needed on the front end
     const userInfo = await prisma.user.findUniqueOrThrow({
       where: { id: targetUser },
       select: {
@@ -100,9 +103,9 @@ export class UserService {
         },
       },
     });
-
+    //Create a array os typed Transactions and populate it with info from the db
     const transactions: Transaction[] = [];
-
+    //Add a custom "type" property to transactions, to filter them on the front end
     userInfo.account.creditedTransactions.map((trsc) =>
       transactions.push({
         type: "credit",

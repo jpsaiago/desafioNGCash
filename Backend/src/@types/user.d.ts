@@ -5,15 +5,9 @@ declare global {
     password: string;
   }
 
-  export interface LoggedUser {
-    token: string;
-    username: string;
-    userId: string;
-    accountId: string;
-  }
-
   export interface TokenPayload {
     userId: string;
     username: string;
+    exp: number;
   }
 }
