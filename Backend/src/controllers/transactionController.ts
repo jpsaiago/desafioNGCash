@@ -24,7 +24,6 @@ export class TransactionController {
           return new ServerError();
       }
     }
-    return error;
   }
 
   public async create(req: Request, res: Response, next: NextFunction) {

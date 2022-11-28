@@ -1,18 +1,33 @@
-import { Route, Routes } from "react-router-dom";
-import Login from "./components/Pages/Login/Login";
-import AuthContainer from "./components/Pages/AuthContainer/AuthContainer";
-import Dashboard from "./components/Pages/Dashboard/Dashboard";
-import SignUp from "./components/Pages/Signup/Signup";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { AuthRoot } from "./pages/AuthRoot/AuthRoot";
+import { Dashboard } from "./pages/Dashboard/Dashboard";
+import { Login } from "./pages/Login/Login";
+import { SignUp } from "./pages/Signup/Signup";
+
+const router = createBrowserRouter([
+  {
+    element: <AuthRoot />,
+    children: [
+      {
+        path: "/",
+        element: <Login />,
+      },
+      {
+        path: "signup",
+        element: <SignUp />,
+      },
+    ],
+  },
+  {
+    path: "dashboard",
+    element: <Dashboard />,
+  },
+  {
+    path: "/*",
+    element: <h1>There's no one here...Weird.</h1>,
+  },
+]);
 
 export function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route element={<AuthContainer />}>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-      </Route>
-      <Route path="/*" element={<h1>There's no one here... Weird.</h1>} />
-    </Routes>
-  );
+  return <RouterProvider router={router} />;
 }

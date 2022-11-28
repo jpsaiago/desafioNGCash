@@ -1,9 +1,6 @@
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-  width: string;
-  className: string;
-}
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-export function Input({ width, className, ...props }: Props) {
+export function Input({ className, ...props }: Props) {
   return (
     <div className={className}>
       <input

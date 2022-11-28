@@ -6,7 +6,7 @@ export const storageInfo = {
     return { username, token, tokenExp };
   },
 
-  set: function (username: string, token: string, tokenExp: Date) {
+  set: async function (username: string, token: string, tokenExp: Date) {
     window.localStorage.setItem("username", username);
     window.localStorage.setItem("token", token);
     window.localStorage.setItem("tokenExp", `${tokenExp}`);

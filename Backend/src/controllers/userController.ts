@@ -1,12 +1,12 @@
 import { Prisma } from "@prisma/client";
-import { Request, Response, NextFunction } from "express";
-import { UserService } from "../services/userServices";
+import { NextFunction, Request, Response } from "express";
 import {
   BadRequestError,
   GatewayError,
   ServerError,
   TimeoutError,
 } from "../helpers/api-errors";
+import { UserService } from "../services/userServices";
 
 const service = new UserService();
 
@@ -24,14 +24,15 @@ export class UserController {
           return new ServerError();
       }
     }
-    return error;
   }
 
   public async register(req: Request, res: Response, next: NextFunction) {
     const body = req.body;
     try {
-      const username = await service.register(body);
-      res.status(201).send(`User ${username} registered successfully!`);
+      const username = await service.signup(body);
+      res
+        .status(201)
+        .json({ message: `User ${username} registered successfully!` });
     } catch (error) {
       next(this.handleErrors(error));
     }

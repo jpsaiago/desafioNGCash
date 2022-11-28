@@ -1,6 +1,4 @@
-import { PropsWithChildren } from "react";
-
-interface Props extends PropsWithChildren {
+interface Props {
   fill: string;
   className: string;
 }

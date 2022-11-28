@@ -12,6 +12,8 @@ const transactions = new TransactionController();
 export const router = express.Router();
 router.use(logger.request);
 
+router.get("/ping", (req, res) => res.status(200).send("Pong"));
+
 router.post(
   "/users",
   inputValidator(validation.registration),

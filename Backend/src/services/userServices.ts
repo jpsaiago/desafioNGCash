@@ -1,11 +1,11 @@
-import { prisma } from "../prisma/prismaClient";
-import { ServerError, UnauthorizedError } from "../helpers/api-errors";
-import config from "../config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import config from "../config";
+import { UnauthorizedError } from "../helpers/api-errors";
+import { prisma } from "../prisma/prismaClient";
 
 export class UserService {
-  public async register(input: Credentials) {
+  public async signup(input: Credentials) {
     const user = await prisma.user.create({
       data: {
         username: input.username,

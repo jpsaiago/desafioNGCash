@@ -1,13 +1,12 @@
-import LoadIndicator from "../Helper/LoadIndicator";
+import LoadIndicator from "../svgs/LoadIndicator";
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  text: string;
   isLoading?: boolean;
   bgColor: string;
 }
 
 export function FormButton({
-  text,
+  value,
   className,
   bgColor,
   isLoading,
@@ -23,17 +22,18 @@ export function FormButton({
         disabled:(opacity-50 h-10 w-full cursor-default)
         `}
         >
-          <p>{text}</p>
+          <p>{value}</p>
         </button>
       </div>
     );
   }
   return (
-    <div className={className}>
+    <div className={`${className} flex`}>
       <button
         {...props}
         disabled
-        className="bg-black border-black rounded-md font-montserrat font-bold h-full border-2 shadow-bold-sm text-lg w-full py-1 px-2 transition-colors relative focus:outline-none"
+        className="bg-black border-black rounded-md cursor-default font-montserrat font-bold h-full mx-auto border-2
+        shadow-bold-sm w-full py-1 px-2 relative focus:outline-none"
       >
         <LoadIndicator />
       </button>

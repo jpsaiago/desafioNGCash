@@ -14,8 +14,9 @@ export async function userLogin(username: string, password: string) {
 }
 
 export async function userSignup(username: string, password: string) {
-  const response = await requester.post<LoginResponse>("/users", {
+  const apiResponse = await requester.post<string>("/users", {
     username,
     password,
   });
+  return apiResponse.data;
 }

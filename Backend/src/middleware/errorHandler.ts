@@ -10,7 +10,7 @@ export async function errorHandler(
 ) {
   if (error instanceof ApiError) {
     logger.error(error.statusCode.toString(), error.message);
-    return res.status(error.statusCode).json({ issues: error.message });
+    return res.status(error.statusCode).json({ message: error.message });
   }
   const response = new ServerError();
   return res.status(response.statusCode).json({ message: response.message });

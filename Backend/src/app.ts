@@ -11,8 +11,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-//Healthcheck route
-app.get("/ping", (req, res) => res.status(200).send("Pong"));
 app.use(router);
 
 prisma.$connect().then(start).catch(connectionError);
