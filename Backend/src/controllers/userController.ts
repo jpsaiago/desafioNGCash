@@ -26,7 +26,7 @@ export class UserController {
     }
   }
 
-  public async register(req: Request, res: Response, next: NextFunction) {
+  public async signup(req: Request, res: Response, next: NextFunction) {
     const body = req.body;
     try {
       const username = await service.signup(body);

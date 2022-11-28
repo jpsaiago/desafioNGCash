@@ -17,7 +17,7 @@ router.get("/ping", (req, res) => res.status(200).send("Pong"));
 router.post(
   "/users",
   inputValidator(validation.registration),
-  (req, res, next) => user.register(req, res, next)
+  (req, res, next) => user.signup(req, res, next)
 );
 
 router.post("/login", inputValidator(validation.login), (req, res, next) =>

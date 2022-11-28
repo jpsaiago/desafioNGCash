@@ -7,7 +7,10 @@ const registrationSchema = z
       .min(
         3,
         "This username is too short, it should be at least 3 characters long"
-      ),
+      )
+      .refine((val) => !val.includes(" "), {
+        message: "Your username can't contain whitespaces",
+      }),
     password: z
       .string()
       .min(
