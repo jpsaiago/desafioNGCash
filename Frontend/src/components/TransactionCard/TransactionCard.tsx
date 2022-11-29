@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { DownArrow } from "../svgs/DownArrow";
-import { UpArrow } from "../svgs/UpArrow";
+import { HiDownload, HiUpload } from "react-icons/hi";
 
 interface Props {
   type: "credit" | "debit";
@@ -19,11 +18,13 @@ export function TransactionCard({ type }: Props) {
       <div className="flex items-center justify-center">
         <p className="text-3xl">$25,00</p>
       </div>
-      {type == "credit" ? (
-        <DownArrow fill="black" className="flex mx-auto items-center" />
-      ) : (
-        <UpArrow fill="black" className="flex mx-auto items-center" />
-      )}
+      <div className="flex items-center justify-center">
+        {type == "credit" ? (
+          <HiDownload size={"2.8rem"} />
+        ) : (
+          <HiUpload size={"2.8rem"} />
+        )}
+      </div>
     </div>
   );
 }
