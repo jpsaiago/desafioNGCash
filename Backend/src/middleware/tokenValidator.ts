@@ -22,7 +22,7 @@ export async function tokenValidator(
     if (!payload.userId || !payload.username) {
       next(new UnauthorizedError("Token missing or invalid."));
     }
-    req.context = { userId: payload.userId };
+    req.context = { username: payload.username };
     next();
   } catch (error) {
     next(new UnauthorizedError("Token missing or invalid."));

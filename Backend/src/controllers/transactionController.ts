@@ -30,9 +30,9 @@ export class TransactionController {
     const body = req.body as TransactionRequest;
     try {
       const results = await service.create(
-        `${req.context?.userId}`,
-        body.receiver,
-        body.value
+        `${req.context?.username}`,
+        body.target,
+        Number(body.value)
       );
       res.status(200).json(results[2]);
     } catch (error) {

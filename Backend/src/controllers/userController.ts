@@ -50,8 +50,8 @@ export class UserController {
 
   public async getInfo(req: Request, res: Response, next: NextFunction) {
     try {
-      //Use the user id present in the token payload to grab info
-      const user = `${req.context?.userId}`;
+      //Use the username present in the token payload to grab info
+      const user = `${req.context?.username}`;
       const account = await service.getInfo(user);
       res.status(200).json(account);
     } catch (error) {

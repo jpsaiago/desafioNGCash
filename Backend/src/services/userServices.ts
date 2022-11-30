@@ -46,7 +46,7 @@ export class UserService {
   public async getInfo(targetUser: string) {
     //Select the info needed on the front end
     const userInfo = await prisma.user.findUniqueOrThrow({
-      where: { id: targetUser },
+      where: { username: targetUser },
       select: {
         account: {
           select: {
@@ -64,30 +64,12 @@ export class UserService {
                     },
                   },
                 },
-                creditedAccount: {
-                  select: {
-                    user: {
-                      select: {
-                        username: true,
-                      },
-                    },
-                  },
-                },
               },
             },
             debitedTransactions: {
               select: {
                 createdAt: true,
                 value: true,
-                debitedAccount: {
-                  select: {
-                    user: {
-                      select: {
-                        username: true,
-                      },
-                    },
-                  },
-                },
                 creditedAccount: {
                   select: {
                     user: {
@@ -103,16 +85,15 @@ export class UserService {
         },
       },
     });
-    //Create a array os typed Transactions and populate it with info from the db
+    //Create an array of typed Transactions and populate it with info from the db
     const transactions: Transaction[] = [];
-    //Add a custom "type" property to transactions, to filter them on the front end
+    //Add a custom "type" property to transactions, to filter them by on the front end
     userInfo.account.creditedTransactions.map((trsc) =>
       transactions.push({
         type: "credit",
         value: trsc.value,
         createdAt: trsc.createdAt,
         from: trsc.debitedAccount.user?.username || "",
-        to: trsc.creditedAccount.user?.username || "",
       })
     );
     userInfo.account.debitedTransactions.map((trsc) =>
@@ -120,10 +101,10 @@ export class UserService {
         type: "debit",
         value: trsc.value,
         createdAt: trsc.createdAt,
-        from: trsc.debitedAccount.user?.username || "",
         to: trsc.creditedAccount.user?.username || "",
       })
     );
+    transactions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
     return {
       balance: userInfo.account.balance,
