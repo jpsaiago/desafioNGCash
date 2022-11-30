@@ -1,12 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { BoldButton } from "../../components/form/BoldButton";
-import { Input } from "../../components/form/Input";
-import { RiCopperCoinFill } from "react-icons/ri";
-import { HiCheckCircle, HiXCircle } from "react-icons/hi2";
-import { userSignup } from "../../services/userAPI";
 import { AxiosError } from "axios";
+import { useState } from "react";
+import { HiCheckCircle, HiXCircle } from "react-icons/hi2";
+import { RiCopperCoinFill } from "react-icons/ri";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "../../components/Button/Button";
+import { TextInput } from "../../components/TextInput/TextInput";
+import { userAPI } from "../../services/userAPI";
 
 export function SignUp() {
   //React Router navigation
@@ -15,7 +15,7 @@ export function SignUp() {
   //API request and error handling
   const { error, isError, isSuccess, data, isLoading, mutate } = useMutation({
     mutationKey: ["signup"],
-    mutationFn: () => userSignup(info.username, info.password),
+    mutationFn: () => userAPI.signup(info.username, info.password),
     async onSuccess() {},
   });
   function errorMessage(e: unknown) {
@@ -57,10 +57,10 @@ export function SignUp() {
       <div className="flex flex-col h-2/3 mt-6 justify-center items-center">
         <HiCheckCircle size="8 rem" />
         <h1 className="font-montserrat font-medium mt-4 text-xl">
-          User jpsaiago registered successfully!
+          {data.message}
         </h1>
-        <BoldButton
-          onClick={() => location.reload()}
+        <Button
+          onClick={() => navigate("/")}
           className="mt-4"
           bgColor="bg-rose-500 hover:bg-rose-400"
           value="login"
@@ -76,7 +76,7 @@ export function SignUp() {
         <h1 className="font-montserrat font-medium mt-4 text-xl">
           {errorMessage(error)}
         </h1>
-        <BoldButton
+        <Button
           className="mt-4"
           bgColor="bg-rose-500 hover:bg-rose-400"
           value="go back"
@@ -107,7 +107,7 @@ export function SignUp() {
           mutate();
         }}
       >
-        <Input
+        <TextInput
           className=" w-full"
           type="text"
           name="username"
@@ -115,7 +115,7 @@ export function SignUp() {
           value={info.username}
           onChange={handleLoginInput}
         />
-        <Input
+        <TextInput
           className=" w-full"
           type="password"
           name="password"
@@ -123,7 +123,7 @@ export function SignUp() {
           value={info.password}
           onChange={handleLoginInput}
         />
-        <BoldButton
+        <Button
           bgColor="bg-sky-500 enabled:hover:bg-sky-400"
           value="signup"
           className="h-10 w-full"

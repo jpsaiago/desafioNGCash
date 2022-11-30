@@ -1,4 +1,5 @@
 import { defineConfig } from "windicss/helpers";
+import ScrollPlugin from "@windicss/plugin-scrollbar";
 
 export default defineConfig({
   theme: {
@@ -13,5 +14,5 @@ export default defineConfig({
       },
     },
   },
-  plugins: [],
+  plugins: [ScrollPlugin],
 });

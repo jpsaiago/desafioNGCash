@@ -6,6 +6,7 @@ specifiers:
   '@types/react-dom': ^18.0.8
   '@types/react-router-dom': ^5.3.3
   '@vitejs/plugin-react': ^2.2.0
+  '@windicss/plugin-scrollbar': ^1.2.3
   axios: ^1.1.3
   react: ^18.2.0
   react-dom: ^18.2.0
@@ -29,6 +30,7 @@ devDependencies:
   '@types/react-dom': 18.0.9
   '@types/react-router-dom': 5.3.3
   '@vitejs/plugin-react': 2.2.0_vite@3.2.4
+  '@windicss/plugin-scrollbar': 1.2.3
   typescript: 4.9.3
   vite: 3.2.4
   vite-plugin-windicss: 1.8.8_vite@3.2.4
@@ -478,6 +480,10 @@ packages:
       windicss: 3.5.6
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@windicss/plugin-scrollbar/1.2.3:
+    resolution: {integrity: sha512-+cqv1pEmaNPITeBJ/lO6tc8IjBzRhQ+V9G8r249MMXivYoxUO4DtModBrRGHVvBgsYZgPXDsIv2jqtxc4NqYEg==}
     dev: true
 
   /@windicss/plugin-utils/1.8.8:

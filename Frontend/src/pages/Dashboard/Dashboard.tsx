@@ -1,36 +1,100 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { BoldButton } from "../../components/form/BoldButton";
-import { Input } from "../../components/form/Input";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { AiOutlineLoading } from "react-icons/ai";
+import { BsExclamationCircleFill } from "react-icons/bs";
 import { RiCopperCoinFill, RiLogoutCircleRLine } from "react-icons/ri";
-import { TransactionCard } from "../../components/TransactionCard/TransactionCard";
+import { useNavigate } from "react-router-dom";
+import TransactionList from "../../components/TransactionList/TransactionList";
+import { UserPanel } from "../../components/UserPanel/UserPanel";
+import { userAPI } from "../../services/userAPI";
 import { storageInfo } from "../../utils/storageInfo";
 import "./background.css";
 
 export function Dashboard() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
-
-  //Transfer form state
-  const [ammount, setAmmount] = useState("");
-  const [target, setTarget] = useState("");
-  function handleTargetInput(e: React.FormEvent<HTMLInputElement>) {
-    setTarget(e.currentTarget.value);
-  }
-  function handleAmmountInput(e: React.FormEvent<HTMLInputElement>) {
-    if (Number(e.currentTarget.value)) {
-      setAmmount(e.currentTarget.value);
-    }
-    if (!e.currentTarget.value) {
-      setAmmount("");
-    }
-  }
-
   const userProfile = storageInfo.get();
+
+  //Array filter states
+  const [creditedFilter, setCreditedFilter] = useState(false);
+  const [debitedFilter, setDebitedFilter] = useState(false);
+  const [reverseFilter, setReverseFilter] = useState(false);
+
+  //Get user account info from server
+  const accountInfo = useQuery({
+    queryKey: ["accountInfo"],
+    queryFn: async () => await userAPI.getInfo(`${storageInfo.get().token}`),
+    staleTime: 1000 * 60 * 3, //3 minutes of staleTime between fetches
+  });
+  //Control array filters
+  const filteredTransactions: Transaction[] = [];
+  accountInfo.data?.transactions.map((trsc) => {
+    if (creditedFilter && debitedFilter) {
+      filteredTransactions.push(trsc);
+    } else {
+      if (creditedFilter && trsc.type == "credit") {
+        filteredTransactions.push(trsc);
+      }
+      if (debitedFilter && trsc.type == "debit") {
+        filteredTransactions.push(trsc);
+      }
+    }
+  });
+  const reverseFilteredTransactions = filteredTransactions.slice().reverse();
+
+  //Clear cache data to avoid access from different logged user
+  function logOut() {
+    window.localStorage.clear();
+    queryClient.invalidateQueries({ queryKey: ["accountInfo"] });
+    queryClient.clear();
+    navigate("/");
+  }
+
+  //Redirect if user not authenticated
+  useEffect(() => {
+    const userSession = storageInfo.get();
+    if (!userSession.token || !userSession.tokenExp || !userSession.username) {
+      if (Number(userSession.tokenExp) <= new Date().getTime()) {
+        navigate("/");
+      }
+    }
+  }, []);
+
+  //Current query states extracted from React-Query
+  if (accountInfo.isLoading) {
+    return (
+      <div
+        className="bg-white border-black rounded-md flex-col flex mx-auto border-2
+        h-[40vh] shadow-bold-sm mt-[20vh] w-[25vw] gap-5 items-center justify-center"
+      >
+        <AiOutlineLoading fill="black" className="animate-spin" size="5rem" />
+        <h1 className="font-montserrat font-bold text-4xl">loading...</h1>
+      </div>
+    );
+  }
+
+  if (accountInfo.isError) {
+    return (
+      <div
+        className="bg-white border-black rounded-md flex-col flex mx-auto border-2
+        h-[40vh] shadow-bold-sm mt-[20vh] w-[25vw] gap-5 items-center justify-center"
+      >
+        <BsExclamationCircleFill
+          fill="black"
+          className="animate-bounce"
+          size="5rem"
+        />
+        <h1 className="font-montserrat font-semibold text-center text-3xl">
+          Unable to connect to server
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div
       id="dashboard"
-      className="md:(h-[100vh] grid w-[100vw] gap-0 grid-cols-[40vw 60vw] grid-rows-[10vh 85vh 5vh] ) "
+      className="md:(h-[100vh] grid w-[100vw] gap-0 grid-cols-2 grid-rows-[10vh 85vh 5vh] ) "
     >
       <div className="bg-black flex flex-row h-10vh col-span-2 items-center justify-between">
         <div className="flex my-auto ml-8 justify-center items-center">
@@ -41,70 +105,57 @@ export function Dashboard() {
         </div>
         <button
           className="flex font-montserrat h-[1.5em] mr-8 text-white w-22 items-center justify-between"
-          onClick={() => {
-            window.localStorage.clear();
-            navigate("/");
-          }}
+          onClick={logOut}
         >
           <p>logout</p>
           <RiLogoutCircleRLine size={"1.5em"} />
         </button>
       </div>
-      <div className="ml-[5vw] w-40vw">
-        <div
-          className="bg-white border-black rounded-md flex flex-col mx-auto 
-        border-2 h-[45%] shadow-bold-sm mt-16 p-10 w-[80%]"
-        >
-          <div className="mb-auto">
-            <p className="font-montserrat font-medium text-3xl">hello,</p>
-            <p className="font-montserrat font-semibold text-5xl">
-              {userProfile.username}
-            </p>
-          </div>
-          <h1 className=" font-montserrat font-medium mt-auto text-6xl self-end">
-            $130.000,00
-          </h1>
-        </div>
-        <form className="mx-auto mt-3 w-full grid w-[80%] gap-4 grid-cols-3 grid-rows-2">
-          <Input
-            className="h-10 col-span-2"
-            placeholder="input an username"
-            name="target"
-            value={target}
-            onChange={handleTargetInput}
-          />
-          <Input
-            className="h-10"
-            placeholder="ammount"
-            name="ammount"
-            value={ammount}
-            onChange={handleAmmountInput}
-          />
-          <BoldButton
-            className="h-10 w-full col-span-3"
-            bgColor="bg-yellow-300"
-            value="send"
-            isLoading={false}
-          />
-        </form>
+      <div className="my-auto mx-auto h-70vh ml-[15vw] w-[60%] justify-center">
+        <UserPanel
+          username={`${userProfile.username}`}
+          balance={accountInfo.data?.balance}
+        />
       </div>
-      <div className="flex mr-[5vw] w-50vw overflow-auto">
-        <div className="bg-white border-black rounded-md mx-auto border-2 h-1/5 shadow-bold-sm mt-16 w-[30%]">
+      <div className="flex flex-row my-auto ml-auto h-70vh mr-[15vw] w-[75%] gap-3 overflow-auto ">
+        <div className="bg-white border-black rounded-md flex flex-col border-2 h-25 w-45 items-center justify-center">
           <div className="flex">
-            <input type="checkbox" />
-            <p>Teste</p>
+            <input
+              name="credit"
+              type="checkbox"
+              onChange={() => setCreditedFilter(!creditedFilter)}
+            />
+            <p>credit</p>
+          </div>
+          <div className="flex">
+            <input
+              name="credit"
+              type="checkbox"
+              onChange={() => setDebitedFilter(!debitedFilter)}
+            />
+            <p>debit</p>
+          </div>
+          <div className="flex">
+            <input
+              name="reverse"
+              type="checkbox"
+              onChange={() => setReverseFilter(!reverseFilter)}
+            />
+            <p>reverse</p>
           </div>
         </div>
-        <div className="flex flex-col mt-16 pr-4 w-[55%] gap-6 overflow-auto">
-          <TransactionCard key={1} type="credit" />
-          <TransactionCard key={2} type="credit" />
-          <TransactionCard key={3} type="credit" />
-          <TransactionCard key={4} type="debit" />
-          <TransactionCard key={5} type="debit" />
-          <TransactionCard key={6} type="credit" />
-        </div>
+        <TransactionList
+          transactions={
+            reverseFilter ? reverseFilteredTransactions : filteredTransactions
+          }
+          isLoading={accountInfo.isLoading}
+          isError={accountInfo.isError}
+        />
       </div>
-      <div className="bg-black flex font-montserrat h-5vh text-xs text-light-50 col-span-2 row-start-3 justify-center items-center self-end">
+      <div
+        className="bg-black flex font-montserrat h-5vh text-xs
+      text-light-50 col-span-2 row-start-3 justify-center items-center self-end"
+      >
         <p className="">
           Esse site é um projeto sem fins lucrativos desenvolvido para o
           processo seletivo da NG Cash

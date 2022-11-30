@@ -1,10 +1,11 @@
 import { AiOutlineLoading } from "react-icons/ai";
+
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   bgColor: string;
 }
 
-export function BoldButton({
+export function Button({
   value,
   className,
   bgColor,

@@ -1,20 +1,29 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { BoldButton } from "../../components/form/BoldButton";
-import { Input } from "../../components/form/Input";
+import React, { useEffect, useState } from "react";
 import { RiCopperCoinFill } from "react-icons/ri";
-import { userLogin } from "../../services/userAPI";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../components/Button/Button";
+import { TextInput } from "../../components/TextInput/TextInput";
+import { userAPI } from "../../services/userAPI";
 import { storageInfo } from "../../utils/storageInfo";
 
 export function Login() {
   //React Router navigation
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const userSession = storageInfo.get();
+    if (userSession.token && userSession.tokenExp && userSession.username) {
+      if (Number(userSession.tokenExp) >= new Date().getTime()) {
+        navigate("/dashboard");
+      }
+    }
+  }, []);
+
   //API request and error handling
   const { isLoading, error, isError, mutate } = useMutation({
-    mutationFn: () => userLogin(info.username, info.password),
+    mutationFn: () => userAPI.login(info.username, info.password),
     retry: false,
     async onSuccess(data) {
       await storageInfo.set(data.username, data.token, data.exp);
@@ -60,7 +69,7 @@ export function Login() {
           mutate();
         }}
       >
-        <Input
+        <TextInput
           className=" w-full"
           type="text"
           name="username"
@@ -68,7 +77,7 @@ export function Login() {
           value={info.username}
           onChange={handleLoginInput}
         />
-        <Input
+        <TextInput
           className=" w-full"
           type="password"
           name="password"
@@ -76,7 +85,7 @@ export function Login() {
           value={info.password}
           onChange={handleLoginInput}
         />
-        <BoldButton
+        <Button
           bgColor="bg-lime-500 hover:bg-lime-300"
           value="login"
           className="h-10 w-full "
@@ -94,7 +103,7 @@ export function Login() {
         <p className="font-montserrat font-bold text-center">
           don't have an account?
         </p>
-        <BoldButton
+        <Button
           disabled={isLoading}
           bgColor="bg-amber-500 hover:enabled:bg-amber-400"
           value="sign-up"

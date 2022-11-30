@@ -5,7 +5,7 @@ const requester = axios.create({
   timeout: 10000,
 });
 
-export async function userLogin(username: string, password: string) {
+async function userLogin(username: string, password: string) {
   const apiResponse = await requester.post<LoginResponse>("/login", {
     username,
     password,
@@ -13,10 +13,23 @@ export async function userLogin(username: string, password: string) {
   return apiResponse.data;
 }
 
-export async function userSignup(username: string, password: string) {
-  const apiResponse = await requester.post<string>("/users", {
+async function userSignup(username: string, password: string) {
+  const apiResponse = await requester.post<{ message: string }>("/users", {
     username,
     password,
   });
   return apiResponse.data;
 }
+
+async function userGetInfo(token: string) {
+  const apiResponse = await requester.get<UserInfo>("users", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return apiResponse.data;
+}
+
+export const userAPI = {
+  login: userLogin,
+  signup: userSignup,
+  getInfo: userGetInfo,
+};

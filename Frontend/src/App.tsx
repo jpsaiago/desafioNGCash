@@ -1,8 +1,11 @@
+import { QueryClient } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthRoot } from "./pages/AuthRoot/AuthRoot";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { Login } from "./pages/Login/Login";
 import { SignUp } from "./pages/Signup/Signup";
+
+export const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
