@@ -1,4 +1,5 @@
 import { defineConfig } from "windicss/helpers";
+import * as form from "windicss/plugin/forms";
 import ScrollPlugin from "@windicss/plugin-scrollbar";
 
 export default defineConfig({
@@ -14,5 +15,5 @@ export default defineConfig({
       },
     },
   },
-  plugins: [ScrollPlugin],
+  plugins: [ScrollPlugin, form],
 });

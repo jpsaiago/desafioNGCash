@@ -7,17 +7,13 @@ interface Props {
   isError: boolean;
 }
 
-export default function TransactionList({
-  transactions,
-  isLoading,
-  isError,
-}: Props) {
+export function TransactionList({ transactions, isLoading, isError }: Props) {
   if (isError) {
-    return <h1>Ops, algo deu errado.</h1>;
+    return <></>;
   }
 
   if (isLoading) {
-    return <h1>Carregando...</h1>;
+    return <></>;
   }
 
   return (
@@ -36,7 +32,7 @@ export default function TransactionList({
           />
         ))
       ) : (
-        <div className="bg-white border-black rounded-md flex flex-col border-2 h-[30vh] w-[90%] justify-center items-center">
+        <div className="bg-white border-black rounded-md flex flex-col border-2 h-[30vh] w-full justify-center items-center">
           <BiMessageAltError size="5rem" />
           <h1 className="font-montserrat font-medium text-center text-xl">
             It looks like there's nothing here.

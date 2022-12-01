@@ -4,7 +4,9 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { BsExclamationCircleFill } from "react-icons/bs";
 import { RiCopperCoinFill, RiLogoutCircleRLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import TransactionList from "../../components/TransactionList/TransactionList";
+import { IoFilter } from "react-icons/io5";
+import OptionsPanel from "../../components/OptionsPanel/OptionsPanel";
+import { TransactionList } from "../../components/TransactionList/TransactionList";
 import { UserPanel } from "../../components/UserPanel/UserPanel";
 import { userAPI } from "../../services/userAPI";
 import { storageInfo } from "../../utils/storageInfo";
@@ -15,27 +17,29 @@ export function Dashboard() {
   const navigate = useNavigate();
   const userProfile = storageInfo.get();
 
-  //Array filter states
-  const [creditedFilter, setCreditedFilter] = useState(false);
-  const [debitedFilter, setDebitedFilter] = useState(false);
-  const [reverseFilter, setReverseFilter] = useState(false);
-
   //Get user account info from server
   const accountInfo = useQuery({
     queryKey: ["accountInfo"],
     queryFn: async () => await userAPI.getInfo(`${storageInfo.get().token}`),
     staleTime: 1000 * 60 * 3, //3 minutes of staleTime between fetches
   });
-  //Control array filters
+
+  //Array filter states
+  const [isCredit, setIsCredit] = useState(true);
+  const [isDebit, setIsDebit] = useState(true);
+  const [isReverse, setIsReverse] = useState(false);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+
+  //Filter and order transaction arrays
   const filteredTransactions: Transaction[] = [];
   accountInfo.data?.transactions.map((trsc) => {
-    if (creditedFilter && debitedFilter) {
+    if (isCredit && isDebit) {
       filteredTransactions.push(trsc);
     } else {
-      if (creditedFilter && trsc.type == "credit") {
+      if (isCredit && trsc.type == "credit") {
         filteredTransactions.push(trsc);
       }
-      if (debitedFilter && trsc.type == "debit") {
+      if (isDebit && trsc.type == "debit") {
         filteredTransactions.push(trsc);
       }
     }
@@ -54,9 +58,9 @@ export function Dashboard() {
   useEffect(() => {
     const userSession = storageInfo.get();
     if (!userSession.token || !userSession.tokenExp || !userSession.username) {
-      if (Number(userSession.tokenExp) <= new Date().getTime()) {
-        navigate("/");
-      }
+      navigate("/");
+    } else if (Number(userSession.tokenExp) <= new Date().getTime()) {
+      navigate("/");
     }
   }, []);
 
@@ -117,36 +121,26 @@ export function Dashboard() {
           balance={accountInfo.data?.balance}
         />
       </div>
-      <div className="flex flex-row my-auto ml-auto h-70vh mr-[15vw] w-[75%] gap-3 overflow-auto ">
-        <div className="bg-white border-black rounded-md flex flex-col border-2 h-25 w-45 items-center justify-center">
-          <div className="flex">
-            <input
-              name="credit"
-              type="checkbox"
-              onChange={() => setCreditedFilter(!creditedFilter)}
-            />
-            <p>credit</p>
-          </div>
-          <div className="flex">
-            <input
-              name="credit"
-              type="checkbox"
-              onChange={() => setDebitedFilter(!debitedFilter)}
-            />
-            <p>debit</p>
-          </div>
-          <div className="flex">
-            <input
-              name="reverse"
-              type="checkbox"
-              onChange={() => setReverseFilter(!reverseFilter)}
-            />
-            <p>reverse</p>
-          </div>
-        </div>
+      <div className="flex flex-row my-auto ml-auto h-70vh mr-[15vw] w-[65%] gap-3 overflow-auto relative">
+        <OptionsPanel
+          isCredit={isCredit}
+          isDebit={isDebit}
+          isOpen={isPanelOpen}
+          isReverse={isReverse}
+          setIsCredit={setIsCredit}
+          setIsDebit={setIsDebit}
+          setIsOpen={setIsPanelOpen}
+          setIsReverse={setIsReverse}
+        />
+        <button
+          onClick={() => setIsPanelOpen(!isPanelOpen)}
+          className=" bg-white border-black rounded-md flex border-2 h-10 w-11 justify-center items-center"
+        >
+          <IoFilter size={"1.5rem"} />
+        </button>
         <TransactionList
           transactions={
-            reverseFilter ? reverseFilteredTransactions : filteredTransactions
+            isReverse ? reverseFilteredTransactions : filteredTransactions
           }
           isLoading={accountInfo.isLoading}
           isError={accountInfo.isError}
