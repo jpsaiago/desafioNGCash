@@ -50,8 +50,7 @@ export function Login() {
     password: "",
   });
   function handleLoginInput(e: React.FormEvent<HTMLInputElement>) {
-    const value = e.currentTarget.value;
-    setInfo({ ...info, [e.currentTarget.name]: value });
+    setInfo({ ...info, [e.currentTarget.name]: e.currentTarget.value });
   }
 
   return (

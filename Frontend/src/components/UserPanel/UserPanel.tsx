@@ -32,15 +32,15 @@ export function UserPanel({ username, balance }: Props) {
           className="h-10 col-span-2"
           placeholder="input an username"
           name="target"
-          state={target}
-          setState={setTarget}
+          value={target}
+          onChange={(e) => setTarget(e.currentTarget.value)}
         />
         <CurrencyInput
           className="h-10"
           placeholder="amount"
           type="text"
-          setState={setAmount}
-          state={amount}
+          setValue={setAmount}
+          value={amount}
         />
         <Button
           className="h-10 col-span-3"

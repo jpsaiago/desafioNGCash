@@ -5,7 +5,7 @@ import { BsExclamationCircleFill } from "react-icons/bs";
 import { RiCopperCoinFill, RiLogoutCircleRLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { IoFilter } from "react-icons/io5";
-import OptionsPanel from "../../components/OptionsPanel/OptionsPanel";
+import { FilterPanel } from "../../components/FilterPanel/FilterPanel";
 import { TransactionList } from "../../components/TransactionList/TransactionList";
 import { UserPanel } from "../../components/UserPanel/UserPanel";
 import { userAPI } from "../../services/userAPI";
@@ -24,13 +24,14 @@ export function Dashboard() {
     staleTime: 1000 * 60 * 3, //3 minutes of staleTime between fetches
   });
 
+  //Filter panel state
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   //Array filter states
   const [isCredit, setIsCredit] = useState(true);
   const [isDebit, setIsDebit] = useState(true);
   const [isReverse, setIsReverse] = useState(false);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
-  //Filter and order transaction arrays
+  //Filter and order transactions, every time the component re-renders these are calculated again
   const filteredTransactions: Transaction[] = [];
   accountInfo.data?.transactions.map((trsc) => {
     if (isCredit && isDebit) {
@@ -44,7 +45,9 @@ export function Dashboard() {
       }
     }
   });
-  const reverseFilteredTransactions = filteredTransactions.slice().reverse();
+  if (isReverse) {
+    filteredTransactions.reverse();
+  }
 
   //Clear cache data to avoid access from different logged user
   function logOut() {
@@ -122,7 +125,7 @@ export function Dashboard() {
         />
       </div>
       <div className="flex flex-row my-auto ml-auto h-70vh mr-[15vw] w-[65%] gap-3 overflow-auto relative">
-        <OptionsPanel
+        <FilterPanel
           isCredit={isCredit}
           isDebit={isDebit}
           isOpen={isPanelOpen}
@@ -139,9 +142,7 @@ export function Dashboard() {
           <IoFilter size={"1.5rem"} />
         </button>
         <TransactionList
-          transactions={
-            isReverse ? reverseFilteredTransactions : filteredTransactions
-          }
+          transactions={filteredTransactions}
           isLoading={accountInfo.isLoading}
           isError={accountInfo.isError}
         />

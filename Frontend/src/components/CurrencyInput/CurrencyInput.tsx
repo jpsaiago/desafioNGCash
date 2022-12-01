@@ -1,9 +1,9 @@
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-  setState: React.Dispatch<React.SetStateAction<string>>;
-  state: string;
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export function CurrencyInput({ className, setState, state, ...props }: Props) {
+export function CurrencyInput({ className, setValue, value, ...props }: Props) {
   const formatter = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "USD",
@@ -14,21 +14,21 @@ export function CurrencyInput({ className, setState, state, ...props }: Props) {
   function handleInput(e: React.KeyboardEvent<HTMLInputElement>) {
     //Remove last digit with backspace
     if (e.key == "Backspace") {
-      setState(state.slice(0, -1));
+      setValue(value.slice(0, -1));
     }
     if (!/\d/.test(e.key)) {
       return;
     }
     //Avoid 0 as initial input
-    if (state == "" && e.key == "0") {
+    if (value == "" && e.key == "0") {
       return;
     }
     //Concatenate typed digit
-    setState(state + e.key);
+    setValue(value + e.key);
   }
-  //Couple input value to state and format it
-  if (state) {
-    formattedInput = formatter.format(Number(state) / 100);
+  //Couple input value to value and format it
+  if (value) {
+    formattedInput = formatter.format(Number(value) / 100);
   }
   return (
     <div className={className}>

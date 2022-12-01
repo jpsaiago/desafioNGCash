@@ -11,7 +11,7 @@ interface Props extends PropsWithChildren {
   setIsReverse: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function OptionsPanel({
+export function FilterPanel({
   isCredit,
   setIsCredit,
   isDebit,
