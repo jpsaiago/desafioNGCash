@@ -1,9 +1,3 @@
-import { loginSchema } from "./login.z";
-import { registrationSchema } from "./registration.z";
-import { transactionRequestSchema } from "./transaction.z";
-
-export const validation = {
-  registration: registrationSchema,
-  login: loginSchema,
-  transactionReq: transactionRequestSchema,
-};
+export { registrationSchema } from "./registration.z";
+export { transactionRequestSchema } from "./transaction.z";
+export { loginSchema } from "./login.z";

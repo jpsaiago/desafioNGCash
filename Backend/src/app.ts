@@ -1,7 +1,6 @@
 import cors from "cors";
 import express from "express";
 import config from "./config";
-import { errorHandler } from "./middleware/errorHandler";
 import { prisma } from "./prisma/prismaClient";
 import { router } from "./routes";
 import { logger } from "./utils/logger";
@@ -15,7 +14,6 @@ app.use(router);
 
 prisma.$connect().then(start).catch(connectionError);
 
-app.use(errorHandler);
 function start() {
   logger.info("Connected to database");
   app.listen(config.port, () =>

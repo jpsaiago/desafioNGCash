@@ -22,7 +22,7 @@ async function userSignup(username: string, password: string) {
 }
 
 async function userGetInfo(token: string) {
-  const apiResponse = await requester.get<UserInfo>("users", {
+  const apiResponse = await requester.get<UserInfo>("/users", {
     headers: { Authorization: `Bearer ${token}` },
   });
   return apiResponse.data;

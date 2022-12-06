@@ -45,6 +45,6 @@ export class TransactionService {
     });
     //Execute the operations in order, roll back everything if any one of them fails
     const results = await prisma.$transaction([subtract, add, newTransaction]);
-    return results;
+    return results[2];
   }
 }

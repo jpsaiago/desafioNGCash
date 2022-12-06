@@ -1,13 +1,20 @@
+import { AnimatePresence } from "framer-motion";
+import { PropsWithChildren } from "react";
 import { BiMessageAltError } from "react-icons/bi";
 import { TransactionCard } from "../TransactionCard/TransactionCard";
 
-interface Props {
+interface Props extends PropsWithChildren {
   transactions?: Transaction[];
   isLoading: boolean;
   isError: boolean;
 }
 
-export function TransactionList({ transactions, isLoading, isError }: Props) {
+export function TransactionList({
+  transactions,
+  isLoading,
+  isError,
+  children,
+}: Props) {
   if (isError) {
     return <></>;
   }
@@ -18,9 +25,10 @@ export function TransactionList({ transactions, isLoading, isError }: Props) {
 
   return (
     <div
-      className="flex flex-col h-full w-full pr-4 pb-8 gap-6 overflow-scroll items-center
+      className="flex flex-col h-full w-full pr-4 pb-8 gap-6 overflow-scroll scroll-smooth items-center
       scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400"
     >
+      <AnimatePresence>{children}</AnimatePresence>
       {transactions && transactions[0] ? (
         transactions.map((trsc, index) => (
           <TransactionCard

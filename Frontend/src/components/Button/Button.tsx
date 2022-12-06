@@ -18,13 +18,13 @@ export function Button({
         <button
           {...props}
           disabled
-          className="bg-black border-black rounded-md cursor-default flex h-full border-2
+          className="bg-black  border-black rounded-md cursor-default flex h-full border-2
           shadow-bold-sm w-full justify-center items-center "
         >
           <AiOutlineLoading
             className="animate-spin"
             fill="white"
-            size="1.8em"
+            size="1.6rem"
           />
         </button>
       </div>
@@ -35,8 +35,8 @@ export function Button({
       <button
         {...props}
         className={`${bgColor} transition-colors border-black rounded-md font-montserrat font-bold
-      border-2 shadow-bold-sm text-lg w-full h-full py-1 px-2 focus:outline-none
-      disabled:(opacity-50 h-10 w-full cursor-default)
+      border-2 flex shadow-bold-sm text-lg w-full h-full py-1 px-2 focus:outline-none justify-center items-center
+      disabled:( h-full w-full cursor-default filter contrast-75 brightness-50)
       `}
       >
         <p>{value}</p>

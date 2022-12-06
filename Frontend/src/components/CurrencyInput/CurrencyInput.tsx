@@ -9,7 +9,6 @@ export function CurrencyInput({ className, setValue, value, ...props }: Props) {
     currency: "USD",
     currencyDisplay: "narrowSymbol",
   });
-  let formattedInput = "";
 
   function handleInput(e: React.KeyboardEvent<HTMLInputElement>) {
     //Remove last digit with backspace
@@ -26,7 +25,8 @@ export function CurrencyInput({ className, setValue, value, ...props }: Props) {
     //Concatenate typed digit
     setValue(value + e.key);
   }
-  //Couple input value to value and format it
+  //Couple displayed value to state and format it, divided by 100 to represent cents
+  let formattedInput = "";
   if (value) {
     formattedInput = formatter.format(Number(value) / 100);
   }

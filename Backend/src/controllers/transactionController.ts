@@ -19,11 +19,12 @@ export class TransactionController {
         case "P1008":
           return new TimeoutError("Operation timed out");
         case "P2001":
-          return new BadRequestError(error.message);
+          return new BadRequestError("User not found");
         default:
           return new ServerError();
       }
     }
+    return error;
   }
 
   public async create(req: Request, res: Response, next: NextFunction) {
@@ -34,7 +35,7 @@ export class TransactionController {
         body.target,
         Number(body.value)
       );
-      res.status(200).json(results[2]);
+      res.status(200).json(results);
     } catch (error) {
       next(this.handleErrors(error));
     }

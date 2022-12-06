@@ -24,6 +24,7 @@ export class UserController {
           return new ServerError();
       }
     }
+    return error;
   }
 
   public async signup(req: Request, res: Response, next: NextFunction) {

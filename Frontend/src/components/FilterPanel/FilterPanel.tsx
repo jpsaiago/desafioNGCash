@@ -1,4 +1,6 @@
+import { motion, Variants } from "framer-motion";
 import { PropsWithChildren } from "react";
+import { TbSortAscending, TbSortDescending } from "react-icons/tb";
 
 interface Props extends PropsWithChildren {
   isCredit: boolean;
@@ -13,61 +15,125 @@ interface Props extends PropsWithChildren {
 
 export function FilterPanel({
   isCredit,
-  setIsCredit,
   isDebit,
-  setIsDebit,
-  isOpen,
-  setIsOpen,
   isReverse,
+  isOpen,
+  setIsCredit,
+  setIsDebit,
   setIsReverse,
+  setIsOpen,
 }: Props) {
-  return (
-    <div
-      className={
-        isOpen
-          ? "md:(bg-white border-black rounded-md flex flex-col gap-4 text-lg font-montserrat top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-2 h-25 px-2 absolute w-[45%] h-[35%] justify-center)" +
-            "sm:()"
-          : "hidden"
-      }
-    >
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="top-3 left-4 absolute"
+  const panelAnim: Variants = {
+    hidden: {
+      scale: 0.6,
+      opacity: 0,
+      y: -50,
+    },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      y: 0,
+      transition: {
+        ease: "easeOut",
+      },
+    },
+    exit: {
+      scale: 0.6,
+      opacity: 0,
+      y: 0,
+      transition: {
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const bgAnim: Variants = {
+    hidden: {
+      opacity: 0,
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        ease: "linear",
+        duration: 0.1,
+        when: "beforeChildren",
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        ease: "linear",
+        duration: 1,
+      },
+    },
+  };
+
+  if (isOpen) {
+    return (
+      <motion.div
+        key="background"
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        variants={bgAnim}
+        className="bg-black rounded-t-md bg-opacity-50 h-[99%] w-[86%] absolute"
       >
-        X
-      </button>
-      <div className="flex flex-row gap-4 justify-center">
-        <div className="flex gap-1 items-center ">
-          <input
-            className="rounded-md border-2 h-5 w-5 hover:border-green-500 focus:(ring-0)
-                checked:(bg-green-500 focus:bg-green-500 hover:bg-green-400) "
-            checked={isCredit}
-            name="credit"
-            type="checkbox"
-            onChange={() => setIsCredit(!isCredit)}
-          />
-          <p>credit</p>
-        </div>
-        <div className="flex gap-1 items-center">
-          <input
-            className="rounded-md border-2 h-5 w-5 hover:border-red-500 focus:(ring-0)
-                checked:(bg-red-500 focus:bg-red-500 hover:bg-red-400) "
-            checked={isDebit}
-            name="credit"
-            type="checkbox"
-            onChange={() => setIsDebit(!isDebit)}
-          />
-          <p>debit</p>
-        </div>
-      </div>
-      <div className="flex">
-        <button
-          className="border-black rounded-md mx-auto bg-fuchsia-500 border-2 shadow-bold-sm py-1 px-2 "
-          onClick={() => setIsReverse(!isReverse)}
+        {/* <m.div
+          key="panel"
+          variants={panelAnim}
+          className=" md:(bg-white border-black rounded-md flex flex-col gap-2 text-lg font-montserrat shadow-bold-sm
+          left-1/4 top-1/6 border-2 px-2 absolute w-[45%] h-[30%] justify-center) "
         >
-          {isReverse ? "oldest first" : "newest first"}
-        </button>
-      </div>
-    </div>
-  );
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="top-3 left-4 absolute"
+          >
+            X
+          </button>
+          <div className="flex flex-row gap-3 justify-center">
+            <div className="flex gap-1 items-center ">
+              <input
+                className="rounded-md border-2 h-5 w-5 hover:border-green-500 focus:(ring-0)
+              checked:(bg-green-500 focus:bg-green-500 hover:bg-green-400) "
+                checked={isCredit}
+                name="credit"
+                type="checkbox"
+                onChange={() => setIsCredit(!isCredit)}
+              />
+              <p>credit</p>
+            </div>
+            <div className="flex gap-1 items-center">
+              <input
+                className="rounded-md border-2 h-5 w-5 hover:border-red-500 focus:(ring-0)
+              checked:(bg-red-500 focus:bg-red-500 hover:bg-red-400) "
+                checked={isDebit}
+                name="credit"
+                type="checkbox"
+                onChange={() => setIsDebit(!isDebit)}
+              />
+              <p>debit</p>
+            </div>
+          </div>
+          <button
+            className="border-black rounded-md flex mx-auto bg-fuchsia-500 border-2 shadow-bold-sm
+            py-1 px-2 w-[90%] gap-1 justify-center items-center "
+            onClick={() => setIsReverse(!isReverse)}
+          >
+            {isReverse ? (
+              <>
+                <TbSortDescending />
+                <p> oldest first</p>
+              </>
+            ) : (
+              <>
+                <TbSortAscending />
+                <p>newest first</p>
+              </>
+            )}
+          </button>
+        </m.div> */}
+      </motion.div>
+    );
+  }
+  return <></>;
 }
