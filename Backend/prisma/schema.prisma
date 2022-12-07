@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://admin:ngchallenge@db:5432/ng-challenge"
+  url      = "postgresql://admin:ngchallenge@postgres:5432/ng-challenge"
 }
 
 model User {
