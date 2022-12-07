@@ -45,10 +45,11 @@ transferências entre usuários e inspeção do seu histórico de transações.
    2. [Escolhas no desenvolvimento](#-escolhas-no-desenvolvimento-do-frontend)
       1. [Prisma](#prisma)
       2. [Zod](#zod)
-3. [Instalação](#-instalação)
-4. [Docker](#-docker)
-5. [Testes](#-testes)
-6. [Observações](#-observações)
+3. [Execução](#%EF%B8%8F-execu%C3%A7%C3%A3o)
+4. [Instalação](#-instalação)
+3. [Docker](#-docker)
+6. [Testes](#-testes)
+7. [Observações](#-observações)
 
 ## 💻 Frontend
 
@@ -120,6 +121,17 @@ Para clonar o projeto, execute o comando:
 git clone https://github.com/jpsaiago/challenge-charlie.git
 ```
 
+## ⚙️ Execução
+As aplicações já estão configuradas, na maior parte, para serem executadas em um ambiente `Node` local. As exceções são:
+- Instalar as dependências de cada parte, de preferência com o `pnpm` para usar o _lock-file_ já presente
+- O backend precisa da url de conexão a uma instância do postgres, que pode ser adicionada ao arquivo `.env` da pasta Backend na seguinte forma:
+![String de conexão Postgres](https://res.cloudinary.com/prismaio/image/upload/v1628761154/docs/m7l8KVo.png)
+- Depois de configurar essa conexão, execute o seguinte comando:
+```bash
+npx prisma migrate dev
+```
+O terminal vai pedir um nome para a migração e então irá criar as tabelas no banco e gerar o _client_ usado pela aplicação
+
 ## 🚢 Docker
 
 Na raiz do repositório, temos um arquivo `docker-compose.yaml`
@@ -157,6 +169,6 @@ desde que seu terminal esteja aberto na pasta que possui o `package.json` do bac
 ## 🔭 Observações
 
 - Dado o escopo da aplicação e para não prolongar demais o desenvolvimento do desafio, não escrevi testes para o Frontend, porém usaria o `Vitest`, suite de testes do `Vite` que usa uma `API` igual a do `Jest`.
-- Também expandiria os testes já existentes, usando o `Cypress` para os testes E-2-E e o `Jest` para os testes de integração.
+- Também expandiria os testes já existentes no backend, usando o `Cypress` para os testes E-2-E e o `Jest` para os testes de integração.
 - Também não configurei um ambiente de desenvolvimento com toda a aplicação rodando em conjunto, me utilizei do `Nodemon`, do modo de desenvolvimento do `Vite` e de um banco `Postgres` local.
 - Uma das vantagens do Prisma é o conceito das migrações e de poder dar _roll-back_ nelas se algo acontecer de errado, porém para evitar a necessidade de executar comandos dentro do container apenas para criar o banco de dados, preparei um arquivo .sql que é usado na inicialização do banco de dados.
