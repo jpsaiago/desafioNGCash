@@ -28,8 +28,6 @@
 Esse projeto é uma plataforma fullstack para transferência de uma moeda digital sem valor real, que permite o cadastro usando usuário e senha,
 transferências entre usuários e inspeção do seu histórico de transações.
 
-
-
 ## 📖 Índice
 
 1. [Frontend](#-frontend)
@@ -47,7 +45,7 @@ transferências entre usuários e inspeção do seu histórico de transações.
       2. [Zod](#zod)
 3. [Execução](#%EF%B8%8F-execu%C3%A7%C3%A3o)
 4. [Instalação](#-instalação)
-3. [Docker](#-docker)
+5. [Docker](#-docker)
 6. [Testes](#-testes)
 7. [Observações](#-observações)
 
@@ -90,8 +88,6 @@ a modificação e iteração dos estilos.
 
 Para animar as trocas de rota do `React Router`, utilizei a biblioteca `Framer Motion`, que foi usada também para coordenar animações de elementos dentro da UI.
 
-
-
 ## 📡 Backend
 
 ### 🕹️ Funcionalidades do backend
@@ -112,7 +108,6 @@ ORM moderna feita para o Typescript, com controle de migrações, transações a
 
 Biblioteca de validação nativa ao Typescript, extremamente útil para criar o middleware que valida o _input_ do usuário de acordo com o _schema_ esperado para cada rota.
 
-
 ## 📦 Instalação
 
 Para clonar o projeto, execute o comando:
@@ -122,21 +117,31 @@ git clone https://github.com/jpsaiago/challenge-charlie.git
 ```
 
 ## ⚙️ Execução
+
 As aplicações já estão configuradas, na maior parte, para serem executadas em um ambiente `Node` local. As exceções são:
+
 - Instalar as dependências de cada parte, de preferência com o `pnpm` para usar o _lock-file_ já presente
-- O backend precisa da url de conexão a uma instância do postgres, que pode ser adicionada ao arquivo `.env` da pasta Backend na seguinte forma:
-![String de conexão Postgres](https://res.cloudinary.com/prismaio/image/upload/v1628761154/docs/m7l8KVo.png)
-- Depois de configurar essa conexão, execute o seguinte comando:
+- O backend precisa da url de conexão a uma instância do postgres, que pode ser modificada no arquivo `.env` da pasta Backend na seguinte forma:
+  ![String de conexão Postgres](https://res.cloudinary.com/prismaio/image/upload/v1628761154/docs/m7l8KVo.png)
+  Por padrão, o projeto vem com a string de conexão dentro da rede do Docker, se for modificar para rodar localmente, não apague.
+
+- Depois de configurar essa conexão, execute o seguinte comando e forneça um nome para a migração quando solicitado:
+
 ```bash
 npx prisma migrate dev
 ```
-O terminal vai pedir um nome para a migração e então irá criar as tabelas no banco e gerar o _client_ usado pela aplicação
+
+Feito tudo isso, basta executar:
+
+```bash
+pnpm(ou yarn ou npm run) dev
+```
+
+na raiz de cada parte da aplicação.
 
 ## 🚢 Docker
 
-Na raiz do repositório, temos um arquivo `docker-compose.yaml`
-
-Não é necessário nenhum arquivo de configuração de ambiente para executar o projeto, visto que se trata de uma rede de containers conectada, a aplicação já está configurada para comunicação.
+A única configuração de ambiente necessária é a string de conexão Postgres no `.env` na raiz do Backend.
 
 Dependendo da versão do `Docker/Docker Compose` que estiver presente na sua máquina, o comando que deve ser executado na raiz do repositório muda.
 
@@ -160,11 +165,14 @@ O Compose levantará 4 containers:
 - Frontend na porta 8000
 
 ## 🧪 Testes
+
 Existem alguns testes no backend que podem ser executados com:
+
 ```bash
 npm test
 ```
-desde que seu terminal esteja aberto na pasta que possui o `package.json` do backend.
+
+desde que seu terminal esteja aberto na pasta que possui o `package.json` do backend e as dependências tenham sido instaladas.
 
 ## 🔭 Observações
 
