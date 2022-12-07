@@ -16,14 +16,14 @@ import { storageInfo } from "../../utils/storageInfo";
 export function Dashboard() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const userProfile = storageInfo.get();
+  const userSession = storageInfo.get();
 
   //Get user account info from server
   const accountInfo = useQuery({
     queryKey: ["accountInfo"],
     queryFn: async () => await userAPI.getInfo(`${storageInfo.get().token}`),
     staleTime: 1000 * 60 * 3, //3 minutes of staleTime between fetches
-    retry: 3,
+    retry: false,
   });
 
   //Filter panel state
@@ -53,19 +53,22 @@ export function Dashboard() {
 
   //Clear login data
   function logOut() {
-    navigate("/");
-    queryClient.removeQueries({ queryKey: ["accountInfo"] });
     window.localStorage.clear();
+    navigate("/");
   }
 
   //Redirect if user not authenticated
   useEffect(() => {
-    const userSession = storageInfo.get();
     if (!userSession.token || !userSession.tokenExp || !userSession.username) {
+      console.log("tô aqui");
       navigate("/");
     } else if (Number(userSession.tokenExp) <= new Date().getTime()) {
       navigate("/");
     }
+    return () => {
+      queryClient.clear();
+      queryClient.cancelQueries({ queryKey: ["accountInfo"] });
+    };
   }, []);
 
   if (accountInfo.isLoading) {
@@ -119,7 +122,7 @@ export function Dashboard() {
           bgColor="bg-orange-400"
           className="h-10 w-22"
           value="logout"
-          onClick={logOut}
+          onClick={() => logOut()}
         />
       </div>
     );
@@ -162,7 +165,7 @@ export function Dashboard() {
           </div>
           <button
             className="flex font-montserrat font-medium h-[1.5em] mr-8 text-white w-22 items-center justify-between"
-            onClick={logOut}
+            onClick={() => logOut()}
           >
             <p>logout</p>
             <RiLogoutCircleRLine size={"100%"} className="h-5 w-5" />
@@ -170,8 +173,8 @@ export function Dashboard() {
         </div>
         <div className="flex flex-col mx-auto h-[35vh] w-[92%] items-center justify-center md:(justify-start my-auto mx-auto h-70vh ml-[15vw] w-[60%]) ">
           <UserPanel
-            userToken={`${userProfile.token}`}
-            username={`${userProfile.username}`}
+            userToken={`${userSession.token}`}
+            username={`${userSession.username}`}
             balance={accountInfo.data?.balance}
           />
         </div>

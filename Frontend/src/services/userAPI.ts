@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const requester = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
+  baseURL: "http://localhost:8080",
   timeout: 10000,
 });
 

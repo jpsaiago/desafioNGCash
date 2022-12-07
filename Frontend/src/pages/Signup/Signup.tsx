@@ -297,7 +297,7 @@ export function SignUp() {
           <Button
             bgColor="bg-sky-500 enabled:hover:bg-sky-400"
             value="signup"
-            className="mx-auto mt-2 transition-all text-2xl w-[50vw] md:(w-[50%] text-xl) "
+            className="mx-auto mt-2 transition-all h-10 text-2xl w-[50vw] md:(w-[50%] text-xl) "
             disabled={validateInputs()}
             isLoading={signupAPI.isLoading}
           />

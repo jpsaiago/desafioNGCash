@@ -26,10 +26,10 @@ services:
 
   frontend:
     build: ./Frontend
-    container_name: backend-ng
+    container_name: frontend-ng
     restart: always
     ports:
-      - 8000:8000
+      - 8000:80
     links:
       - backend
     depends_on:

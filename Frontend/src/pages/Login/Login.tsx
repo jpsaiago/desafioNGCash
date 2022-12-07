@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { HiOutlineEye, HiOutlineEyeSlash } from "react-icons/hi2";
 import { RiCopperCoinFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { queryClient } from "../../App";
 import { Button } from "../../components/Button/Button";
 import { TextInput } from "../../components/TextInput/TextInput";
 import { userAPI } from "../../services/userAPI";
@@ -14,6 +15,7 @@ import { storageInfo } from "../../utils/storageInfo";
 export function Login() {
   //React Router navigation
   const navigate = useNavigate();
+  const userSession = storageInfo.get();
 
   //Login submit
   function handleSubmitLogin(e: React.FormEvent<HTMLFormElement>) {
@@ -49,7 +51,7 @@ export function Login() {
     retry: false,
     async onSuccess(data) {
       await storageInfo.set(data.username, data.token, data.exp);
-      navigate("dashboard");
+      navigate("/dashboard");
     },
     onError(e) {
       if (e instanceof AxiosError) {
@@ -82,16 +84,7 @@ export function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  //Redirect if user is already authenticated
-  useEffect(() => {
-    const userSession = storageInfo.get();
-    if (userSession.token && userSession.tokenExp && userSession.username) {
-      if (Number(userSession.tokenExp) >= new Date().getTime()) {
-        return navigate("/dashboard");
-      }
-    }
-  }, []);
-
+  //Animation params
   const signupAnim: AnimationProps = {
     initial: {
       opacity: 0,
@@ -125,6 +118,14 @@ export function Login() {
       },
     },
   };
+
+  useEffect(() => {
+    if (userSession.token && userSession.tokenExp && userSession.username) {
+      if (Number(userSession.tokenExp) >= new Date().getTime()) {
+        navigate("/dashboard");
+      }
+    }
+  }, []);
 
   return (
     <>
