@@ -28,20 +28,23 @@
 Esse projeto é uma plataforma fullstack para transferência de uma moeda digital sem valor real, que permite o cadastro usando usuário e senha,
 transferências entre usuários e inspeção do seu histórico de transações.
 
----
+
 
 ## 📖 Índice
 
 1. [Frontend](#-frontend)
    1. [Funcionalidades do frontend](#%EF%B8%8F-funcionalidades-do-frontend)
-   2. [Escolhas no desenvolvimento](#-escolhas-no-desenvolvimento)
+   2. [Escolhas no desenvolvimento](#-escolhas-no-desenvolvimento-do-frontend)
       1. [Vite](#vite)
       2. [Tanstack-Query vs. Redux](#tanstack-query-vs-redux)
       3. [Layout](#layout)
-      4. [Immer](#immer)
-      5. [WindiCSS](#windicss)
-      6. [Framer Motion](#framer-motion)
+      4. [WindiCSS](#windicss)
+      5. [Framer Motion](#framer-motion)
 2. [Backend](#-backend)
+   1. [Funcionalidades do backend](#%EF%B8%8F-funcionalidades-do-backend)
+   2. [Escolhas no desenvolvimento](#-escolhas-no-desenvolvimento-do-frontend)
+      1. [Prisma](#prisma)
+      2. [Zod](#zod)
 3. [Instalação](#-instalação)
 4. [Docker](#-docker)
 5. [Testes](#-testes)
@@ -86,7 +89,7 @@ a modificação e iteração dos estilos.
 
 Para animar as trocas de rota do `React Router`, utilizei a biblioteca `Framer Motion`, que foi usada também para coordenar animações de elementos dentro da UI.
 
----
+
 
 ## 📡 Backend
 
@@ -108,7 +111,6 @@ ORM moderna feita para o Typescript, com controle de migrações, transações a
 
 Biblioteca de validação nativa ao Typescript, extremamente útil para criar o middleware que valida o _input_ do usuário de acordo com o _schema_ esperado para cada rota.
 
----
 
 ## 📦 Instalação
 
@@ -144,6 +146,13 @@ O Compose levantará 4 containers:
 - Prisma Studio na porta 5555
 - Backend na porta 8080
 - Frontend na porta 8000
+
+## 🧪 Testes
+Existem alguns testes no backend que podem ser executados com:
+```bash
+npm test
+```
+desde que seu terminal esteja aberto na pasta que possui o `package.json` do backend.
 
 ## 🔭 Observações
 
