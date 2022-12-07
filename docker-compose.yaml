@@ -5,6 +5,7 @@ services:
     container_name: postgres-ng
     volumes:
       - challenge-data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
     environment:
@@ -22,6 +23,17 @@ services:
       - db
     depends_on:
       - db
+
+  frontend:
+    build: ./Frontend
+    container_name: backend-ng
+    restart: always
+    ports:
+      - 8000:8000
+    links:
+      - backend
+    depends_on:
+      - backend
 
 volumes:
   challenge-data:

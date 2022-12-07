@@ -87,7 +87,7 @@ export function Login() {
     const userSession = storageInfo.get();
     if (userSession.token && userSession.tokenExp && userSession.username) {
       if (Number(userSession.tokenExp) >= new Date().getTime()) {
-        navigate("/dashboard");
+        return navigate("/dashboard");
       }
     }
   }, []);
@@ -182,7 +182,7 @@ export function Login() {
             <Button
               bgColor="bg-lime-500 hover:bg-lime-300"
               value="login"
-              className="h-[6vh] h-max-12 w-[30%]  "
+              className="h-[6vh] h-max-12 text-2xl w-[30%] md:(text-xl ) "
               isLoading={loginApi.isLoading}
             />
           </form>
@@ -198,14 +198,14 @@ export function Login() {
             </p>
           </div>
           <div className="mt-4">
-            <p className="font-montserrat font-bold text-center">
+            <p className="font-montserrat font-bold text-xl text-center md:(text-base)">
               don't have an account?
             </p>
             <Button
               disabled={loginApi.isLoading}
               bgColor="bg-amber-500 hover:enabled:bg-amber-400"
               value="sign-up"
-              className="mx-auto mt-2 transition-all w-[70%]"
+              className="mx-auto h-[6vh] h-max-12 mt-2 transition-all text-2xl w-[50vw] md:(w-[50%] text-xl) "
               onClick={() => navigate("/signup")}
             />
           </div>

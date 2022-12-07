@@ -4,28 +4,14 @@ import { TransactionCard } from "../TransactionCard/TransactionCard";
 
 interface Props extends PropsWithChildren {
   transactions?: Transaction[];
-  isLoading: boolean;
-  isError: boolean;
 }
 
-export function TransactionList({
-  transactions,
-  isLoading,
-  isError,
-  children,
-}: Props) {
-  if (isError) {
-    return <></>;
-  }
-
-  if (isLoading) {
-    return <></>;
-  }
-
+export function TransactionList({ transactions, children }: Props) {
   return (
     <div
-      className="flex flex-col h-full w-full pr-4 pb-8 gap-6 overflow-scroll scroll-smooth items-center
-      scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400"
+      className="flex flex-col h-full w-full gap-2 overflow-scroll
+      scroll-smooth items-center scrollbar-thin scrollbar-track-transparent
+      scrollbar-thumb-gray-400 md:(pr-4 pb-8 gap-6) "
     >
       {children}
       {transactions && transactions[0] ? (

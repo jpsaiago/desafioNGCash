@@ -51,11 +51,11 @@ export function Dashboard() {
     filteredTransactions.reverse();
   }
 
-  //Clear cache data to avoid access from different logged user
+  //Clear login data
   function logOut() {
-    window.localStorage.clear();
-    queryClient.clear();
     navigate("/");
+    queryClient.removeQueries({ queryKey: ["accountInfo"] });
+    window.localStorage.clear();
   }
 
   //Redirect if user not authenticated
@@ -68,7 +68,6 @@ export function Dashboard() {
     }
   }, []);
 
-  //Current query states extracted from React-Query
   if (accountInfo.isLoading) {
     const loadingAnim: AnimationProps = {
       initial: {
@@ -86,6 +85,7 @@ export function Dashboard() {
         opacity: 0,
       },
     };
+    //Current query states extracted from React-Query
     return (
       <div className="bg-black h-[100vh] grid w-[100vw] justify-center align-middle">
         <m.div
@@ -104,22 +104,22 @@ export function Dashboard() {
   if (accountInfo.isError) {
     return (
       <div
-        className="bg-white border-black rounded-md flex-col flex mx-auto border-2
-        h-[40vh] shadow-bold-sm mt-[20vh] w-[25vw] gap-5 items-center justify-center"
+        className="bg-black flex-col flex mx-auto top-0 right-0 bottom-0 left-0
+        gap-5 fixed items-center justify-center"
       >
         <BsExclamationCircleFill
-          fill="black"
+          fill="white"
           className="animate-bounce"
           size="5rem"
         />
-        <h1 className="font-montserrat font-semibold text-center text-3xl">
+        <h1 className="font-montserrat font-semibold text-center text-white text-3xl">
           Unable to connect to server
         </h1>
         <Button
           bgColor="bg-orange-400"
           className="h-10 w-22"
           value="logout"
-          onClick={() => logOut()}
+          onClick={logOut}
         />
       </div>
     );
@@ -146,42 +146,48 @@ export function Dashboard() {
       />
       <div
         id="dashboard"
-        className="md:(h-[100vh] grid w-[100vw] gap-0 grid-cols-2 grid-rows-[10vh 85vh 5vh] ) "
+        className="flex flex-col
+        md:(h-[100vh] grid w-[100vw] gap-0 grid-cols-2 grid-rows-[10vh 85vh 5vh] ) "
       >
-        <div className="bg-black flex flex-row h-10vh col-span-2 items-center justify-between">
-          <div className="flex my-auto ml-8 justify-center items-center">
-            <RiCopperCoinFill className="mx-1" size={"1.8em"} fill="#ffffff" />
-            <h1 className="font-bold font-montserrat mx-1 text-white text-3xl w-40">
+        <div className="bg-black flex flex-row h-[5vh] justify-between items-center md:(h-10vh col-span-2  ) ">
+          <div className="flex my-auto ml-4 justify-center items-center">
+            <RiCopperCoinFill
+              className="h-4 mx-1 w-4"
+              size={"100%"}
+              fill="#ffffff"
+            />
+            <h1 className="font-bold font-montserrat text-sm text-white md:( text-3xl w-40 mx-1) ">
               challeNGe
             </h1>
           </div>
           <button
-            className="flex font-montserrat h-[1.5em] mr-8 text-white w-22 items-center justify-between"
+            className="flex font-montserrat font-medium h-[1.5em] mr-8 text-white w-22 items-center justify-between"
             onClick={logOut}
           >
             <p>logout</p>
-            <RiLogoutCircleRLine size={"1.5em"} />
+            <RiLogoutCircleRLine size={"100%"} className="h-5 w-5" />
           </button>
         </div>
-        <div className="my-auto mx-auto h-70vh ml-[15vw] w-[60%] justify-center">
+        <div className="flex flex-col mx-auto h-[35vh] w-[92%] items-center justify-center md:(justify-start my-auto mx-auto h-70vh ml-[15vw] w-[60%]) ">
           <UserPanel
             userToken={`${userProfile.token}`}
             username={`${userProfile.username}`}
             balance={accountInfo.data?.balance}
           />
         </div>
-        <div className="flex flex-row my-auto ml-auto h-70vh mr-[15vw] w-[65%] gap-3 overflow-auto relative">
+        <div
+          className="bg-black flex flex-col h-[60vh] px-4 gap-3 overflow-scroll relative
+        md:(bg-transparent my-auto ml-auto h-[70vh] mr-[15vw] w-[65%] flex-row overflow-hidden ) "
+        >
           <button
             onClick={() => setIsPanelOpen(!isPanelOpen)}
-            className=" bg-white border-black rounded-md flex border-2 h-10 w-11 justify-center items-center"
+            className=" bg-white rounded-md flex h-[6%] mt-2 gap-1 justify-center items-center
+            md:(border-black rounded-md border-2 h-10 w-11) "
           >
-            <IoFilter size={"1.5rem"} />
+            <IoFilter size="1.5rem" />
+            <p className="font-montserrat font-semibold md:(hidden)">filter</p>
           </button>
-          <TransactionList
-            transactions={filteredTransactions}
-            isLoading={accountInfo.isLoading}
-            isError={accountInfo.isError}
-          >
+          <TransactionList transactions={filteredTransactions}>
             <AnimatePresence>
               {isPanelOpen ? (
                 <FilterPanel
@@ -199,10 +205,10 @@ export function Dashboard() {
           </TransactionList>
         </div>
         <div
-          className="bg-black flex font-montserrat h-5vh text-xs
-      text-light-50 col-span-2 row-start-3 justify-center items-center self-end"
+          className=" hidden md:(bg-black block flex font-montserrat h-5vh text-xs
+      text-light-50 col-span-2 row-start-3 justify-center items-center self-end) "
         >
-          <p className="">
+          <p>
             Esse site é um projeto sem fins lucrativos desenvolvido para o
             processo seletivo da NG Cash
           </p>

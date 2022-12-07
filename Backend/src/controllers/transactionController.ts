@@ -1,5 +1,9 @@
 import { Prisma } from "@prisma/client";
-import { Request, Response, NextFunction } from "express";
+import {
+  NotFoundError,
+  PrismaClientKnownRequestError,
+} from "@prisma/client/runtime";
+import { NextFunction, Request, Response } from "express";
 import {
   BadRequestError,
   GatewayError,
@@ -23,6 +27,9 @@ export class TransactionController {
         default:
           return new ServerError();
       }
+    }
+    if (error instanceof NotFoundError) {
+      return new BadRequestError("Target user not found.");
     }
     return error;
   }

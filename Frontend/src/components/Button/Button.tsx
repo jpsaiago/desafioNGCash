@@ -36,7 +36,7 @@ export function Button({
       <button
         {...props}
         className={`${bgColor} transition-colors border-black rounded-md font-montserrat font-bold
-      border-2 flex shadow-bold-sm text-lg w-full h-full py-1 px-2 focus:outline-none justify-center items-center
+      border-2 flex shadow-bold-sm w-full h-full py-1 px-2 focus:outline-none justify-center items-center
       disabled:( h-full w-full cursor-default filter brightness-75)
       `}
       >

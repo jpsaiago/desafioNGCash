@@ -52,17 +52,17 @@ export function TransactionConfirm({
     >
       <p className="flex font-montserrat font-semibold text-lg gap-1 col-span-2 justify-center">
         Transfer
-        <span className="text-fuchsia-600"> {`${formatAmount}`} </span>
+        <span className="text-fuchsia-600">{`${formatAmount}`}</span>
         to
-        <span className="text-fuchsia-600"> {`${target}`} </span>?
+        <span className="text-fuchsia-600">{`${target}?`}</span>
       </p>
       <Button
         className="mx-auto w-[80%]"
         bgColor="bg-lime-300"
         value={"confirm"}
-        onClick={() => {
+        onClick={async () => {
           setOpen(false);
-          mutate();
+          await mutate();
         }}
       />
       <Button

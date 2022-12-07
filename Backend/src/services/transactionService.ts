@@ -24,7 +24,6 @@ export class TransactionService {
         account: true,
       },
     });
-    console.log(typeof value);
     //Create operations as promises
     const subtract = prisma.account.update({
       where: { id: dbSender.account.id },

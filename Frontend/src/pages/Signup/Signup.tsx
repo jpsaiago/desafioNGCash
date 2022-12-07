@@ -17,8 +17,7 @@ export function SignUp() {
   //API request and error handling
   const signupAPI = useMutation({
     mutationKey: ["signup"],
-    mutationFn: () => userAPI.signup(info.username, info.password),
-    async onSuccess() {},
+    mutationFn: async () => await userAPI.signup(info.username, info.password),
   });
   function errorMessage(e: unknown) {
     //Type check needed to satisfy Typescript
@@ -104,36 +103,37 @@ export function SignUp() {
     },
   };
 
-  if (true) {
+  if (signupAPI.isSuccess) {
     return (
       <div
-        className="bg-white flex flex-col h-[100vh] w-[100vw]
+        className="bg-white flex flex-col h-[100vh] w-[100vw] overflow-hidden
       md:(h-[80vh] rounded-lg my-[10vh] mx-auto w-[30vw] min-w-40) "
       >
         <m.div
+          key={"container"}
           variants={containerVar}
           initial="initial"
           animate="animate"
           exit="exit"
-          className="bg-violet-600 h-[100vh] py-14 px-10 w-[100vw]
-        md:(h-full rounded-lg w-full ) "
+          className="bg-teal-600 h-[100vh]  w-[100vw]
+        md:(h-full rounded-lg w-full py-14 px-10) "
         >
           <m.div
+            key={"content"}
             variants={contentVar}
-            className="flex flex-col h-[100vh] py-14 px-10 w-[100vw]
+            className="flex flex-col h-[100vh]  w-[100vw]
           gap-[4%] justify-center items-center
-          md:(h-full rounded-lg w-full ) "
+          md:(h-full rounded-lg w-full py-14 px-10) "
           >
-            <HiCheckCircle className="h-[9vw] fill-white w-[9vw]" />
-            <h1 className="font-montserrat font-semibold text-white text-center text-2xl">
-              User
-              <span className="font-bold text-teal-300">
-                {` signupAPI.data.message `}
-              </span>
-              registered successfully
+            <HiCheckCircle
+              size="100%"
+              className="h-[30vw] fill-white w-[30vw] md:(h-[9vw] w-[9vw]) "
+            />
+            <h1 className="font-montserrat font-bold text-white text-center text-3xl md:text-xl">
+              {signupAPI.data.message}
             </h1>
             <Button
-              className=""
+              className="text-3xl md:(text-xl mt-2) "
               onClick={() => navigate("/")}
               bgColor="bg-white hover:bg-emerald-400"
               value="login"
@@ -145,20 +145,47 @@ export function SignUp() {
   }
 
   if (signupAPI.isError) {
-    return (
-      <div className="flex flex-col h-2/3 mt-6 justify-center items-center">
-        <HiXCircle size="8rem" />
-        <h1 className="font-montserrat font-medium mt-4 text-xl">
-          {errorMessage(signupAPI.error)}
-        </h1>
-        <Button
-          className="mt-4"
-          bgColor="bg-rose-500 hover:bg-rose-400"
-          value="go back"
-          onClick={() => location.reload()}
-        />
-      </div>
-    );
+    if (signupAPI.error instanceof AxiosError) {
+      return (
+        <div
+          className="bg-white flex flex-col h-[100vh] w-[100vw] overflow-hidden
+      md:(h-[80vh] rounded-lg my-[10vh] mx-auto w-[30vw] min-w-40) "
+        >
+          <m.div
+            key={"container"}
+            variants={containerVar}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="bg-rose-600 h-[100vh]  w-[100vw]
+        md:(h-full rounded-lg w-full py-14 px-10) "
+          >
+            <m.div
+              key={"content"}
+              variants={contentVar}
+              className="flex flex-col h-[100vh]  w-[100vw]
+          gap-[4%] justify-center items-center
+          md:(h-full rounded-lg w-full py-14 px-10) "
+            >
+              <HiXCircle
+                size="100%"
+                className="h-[30vw] fill-white w-[30vw] md:(h-[7vw] w-[7vw]) "
+              />
+              <h1 className="font-montserrat font-bold text-white text-center text-3xl md:text-xl">
+                {signupAPI.error.response?.data.message ??
+                  "Unable to sign-up, please try again."}
+              </h1>
+              <Button
+                className="text-3xl md:(text-xl mt-2) "
+                onClick={() => navigate("/")}
+                bgColor="bg-white hover:bg-emerald-400"
+                value="login"
+              />
+            </m.div>
+          </m.div>
+        </div>
+      );
+    } else return <></>;
   }
 
   const animation: AnimationProps = {
@@ -208,9 +235,9 @@ export function SignUp() {
         </div>
         <form
           className="flex flex-col h-[60%] mt-[4vh] w-full max-h-[40vh] gap-5"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            signupAPI.mutate();
+            await signupAPI.mutateAsync();
           }}
         >
           <TextInput
@@ -221,7 +248,10 @@ export function SignUp() {
             value={info.username}
             onChange={handleLoginInput}
           />
-          <ul className="flex flex-col font-montserrat font-bold list-disc mx-auto leading-tight text-[0.8rem]">
+          <ul
+            className="flex flex-col font-montserrat font-bold list-disc mx-auto text-sm
+            leading-tight w-[80%] md:text-[0.8rem]"
+          >
             <li
               className={
                 inputRules.userLength() ? "text-green-500" : "text-red-500"
@@ -238,7 +268,10 @@ export function SignUp() {
             value={info.password}
             onChange={handleLoginInput}
           />
-          <ul className="flex flex-col font-montserrat font-bold list-disc mx-auto leading-tight text-[0.8rem]">
+          <ul
+            className="flex flex-col font-montserrat font-bold list-disc mx-auto text-sm leading-tight
+            w-[80%] md:text-[0.8rem]"
+          >
             <li
               className={
                 inputRules.passLength() ? "text-green-500" : "text-red-500"
@@ -264,7 +297,7 @@ export function SignUp() {
           <Button
             bgColor="bg-sky-500 enabled:hover:bg-sky-400"
             value="signup"
-            className="mx-auto h-12 h-max-[6vh] w-[70%]"
+            className="mx-auto mt-2 transition-all text-2xl w-[50vw] md:(w-[50%] text-xl) "
             disabled={validateInputs()}
             isLoading={signupAPI.isLoading}
           />
