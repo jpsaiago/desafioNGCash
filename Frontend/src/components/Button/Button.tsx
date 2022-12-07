@@ -10,6 +10,7 @@ export function Button({
   className,
   bgColor,
   isLoading,
+  children,
   ...props
 }: Props) {
   if (isLoading) {
@@ -36,9 +37,10 @@ export function Button({
         {...props}
         className={`${bgColor} transition-colors border-black rounded-md font-montserrat font-bold
       border-2 flex shadow-bold-sm text-lg w-full h-full py-1 px-2 focus:outline-none justify-center items-center
-      disabled:( h-full w-full cursor-default filter contrast-75 brightness-50)
+      disabled:( h-full w-full cursor-default filter brightness-75)
       `}
       >
+        {children}
         <p>{value}</p>
       </button>
     </div>

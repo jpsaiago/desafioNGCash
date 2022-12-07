@@ -103,7 +103,8 @@ export function SignUp() {
       },
     },
   };
-  if (signupAPI.isSuccess) {
+
+  if (true) {
     return (
       <div
         className="bg-white flex flex-col h-[100vh] w-[100vw]
@@ -127,7 +128,7 @@ export function SignUp() {
             <h1 className="font-montserrat font-semibold text-white text-center text-2xl">
               User
               <span className="font-bold text-teal-300">
-                {signupAPI.data.message}
+                {` signupAPI.data.message `}
               </span>
               registered successfully
             </h1>

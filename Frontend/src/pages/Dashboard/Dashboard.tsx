@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { AnimatePresence, AnimationProps, m } from "framer-motion";
 import { useEffect, useState } from "react";
-import { AiOutlineLoading } from "react-icons/ai";
 import { BsExclamationCircleFill } from "react-icons/bs";
 import { IoFilter } from "react-icons/io5";
 import { RiCopperCoinFill, RiLogoutCircleRLine } from "react-icons/ri";
@@ -10,9 +10,8 @@ import { FilterPanel } from "../../components/FilterPanel/FilterPanel";
 import { TransactionList } from "../../components/TransactionList/TransactionList";
 import { UserPanel } from "../../components/UserPanel/UserPanel";
 import { userAPI } from "../../services/userAPI";
-import { storageInfo } from "../../utils/storageInfo";
 import "../../style/dashBackground.css";
-import { AnimatePresence, AnimationProps, m } from "framer-motion";
+import { storageInfo } from "../../utils/storageInfo";
 
 export function Dashboard() {
   const queryClient = useQueryClient();
@@ -183,17 +182,20 @@ export function Dashboard() {
             isLoading={accountInfo.isLoading}
             isError={accountInfo.isError}
           >
-            <FilterPanel
-              key={"teste"}
-              isCredit={isCredit}
-              isDebit={isDebit}
-              isOpen={isPanelOpen}
-              isReverse={isReverse}
-              setIsCredit={setIsCredit}
-              setIsDebit={setIsDebit}
-              setIsOpen={setIsPanelOpen}
-              setIsReverse={setIsReverse}
-            />
+            <AnimatePresence>
+              {isPanelOpen ? (
+                <FilterPanel
+                  key={"teste"}
+                  isCredit={isCredit}
+                  isDebit={isDebit}
+                  isReverse={isReverse}
+                  setIsCredit={setIsCredit}
+                  setIsDebit={setIsDebit}
+                  setIsOpen={setIsPanelOpen}
+                  setIsReverse={setIsReverse}
+                />
+              ) : null}
+            </AnimatePresence>
           </TransactionList>
         </div>
         <div

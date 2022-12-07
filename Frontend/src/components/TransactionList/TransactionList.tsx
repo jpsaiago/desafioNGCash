@@ -1,4 +1,3 @@
-import { AnimatePresence } from "framer-motion";
 import { PropsWithChildren } from "react";
 import { BiMessageAltError } from "react-icons/bi";
 import { TransactionCard } from "../TransactionCard/TransactionCard";
@@ -28,7 +27,7 @@ export function TransactionList({
       className="flex flex-col h-full w-full pr-4 pb-8 gap-6 overflow-scroll scroll-smooth items-center
       scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400"
     >
-      <AnimatePresence>{children}</AnimatePresence>
+      {children}
       {transactions && transactions[0] ? (
         transactions.map((trsc, index) => (
           <TransactionCard
